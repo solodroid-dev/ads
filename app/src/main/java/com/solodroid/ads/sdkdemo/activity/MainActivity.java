@@ -50,7 +50,14 @@ public class MainActivity extends AppCompatActivity {
         sharedPref = new SharedPref(this);
         getAppTheme();
         setContentView(R.layout.activity_main);
+        adsManager = new AdsManager(this);
+        initView();
+        new Handler(Looper.getMainLooper()).postDelayed(this::loadAds, 250);
+        switchAppTheme();
 
+    }
+
+    private void initView() {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ((TextView) findViewById(R.id.toolbar_sub_title)).setText(SDK_TYPE);
@@ -58,39 +65,11 @@ public class MainActivity extends AppCompatActivity {
         bannerAdView = findViewById(R.id.banner_ad_view);
         bannerAdView.addView(View.inflate(this, R.layout.view_banner_ad, null));
 
-        adsManager = new AdsManager(this);
-        adsManager.initializeAd();
-        adsManager.updateGdprConsentStatus();
-        if (Constant.FORCE_TO_SHOW_APP_OPEN_AD_ON_START) {
-            ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleObserver);
-            adsManager.loadAppOpenAds(Constant.OPEN_ADS_ON_RESUME, false, () -> {
-            });
-        }
-        adsManager.loadBannerAd();
-        adsManager.loadInterstitialAd(() -> {
-            startActivity(new Intent(getApplicationContext(), SecondActivity.class));
-            Log.d(TAG, "Rawr!!!!!");
-        });
-        adsManager.loadRewardedAd();
         nativeAdViewContainer = findViewById(R.id.native_ad);
-        setNativeAdStyle(nativeAdViewContainer);
-        adsManager.loadNativeAd();
 
         btnInterstitial = findViewById(R.id.btn_interstitial);
-        btnInterstitial.setOnClickListener(v -> {
-            //startActivity(new Intent(getApplicationContext(), SecondActivity.class));
-            adsManager.showInterstitialAd();
-            //adsManager.destroyBannerAd();
-        });
-
-        btnRewarded = findViewById(R.id.btn_rewarded);
-        btnRewarded.setOnClickListener(view -> adsManager.showRewardedAd());
-
         btnNative = findViewById(R.id.btn_native);
-        btnNative.setOnClickListener(v -> {
-            startActivity(new Intent(getApplicationContext(), SecondActivity.class));
-            adsManager.destroyBannerAd();
-        });
+        btnRewarded = findViewById(R.id.btn_rewarded);
 
         btnSelectAds = findViewById(R.id.btn_select_ads);
         btnSelectAds.setText("Selected Ad: " + Constant.AD_NETWORK);
@@ -99,9 +78,40 @@ public class MainActivity extends AppCompatActivity {
 
         btnNativeAdStyle = findViewById(R.id.btn_native_ad_style);
         btnNativeAdStyle.setOnClickListener(v -> changeNativeAdStyle());
+    }
 
-        switchAppTheme();
+    private void loadAds() {
+        adsManager.initializeAd();
 
+        adsManager.updateGdprConsentStatus();
+        if (Constant.FORCE_TO_SHOW_APP_OPEN_AD_ON_START) {
+            ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleObserver);
+            adsManager.loadAppOpenAds(Constant.OPEN_ADS_ON_RESUME, false, () -> {
+            });
+        }
+
+        adsManager.loadBannerAd();
+
+        adsManager.loadInterstitialAd(() -> {
+            startActivity(new Intent(getApplicationContext(), SecondActivity.class));
+            Log.d(TAG, "Rawr!!!!!");
+        });
+        adsManager.loadRewardedAd();
+        setNativeAdStyle(nativeAdViewContainer);
+        adsManager.loadNativeAd();
+
+        btnInterstitial.setOnClickListener(v -> {
+            //startActivity(new Intent(getApplicationContext(), SecondActivity.class));
+            adsManager.showInterstitialAd();
+            //adsManager.destroyBannerAd();
+        });
+
+        btnRewarded.setOnClickListener(view -> adsManager.showRewardedAd());
+
+        btnNative.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), SecondActivity.class));
+            adsManager.destroyBannerAd();
+        });
     }
 
     @Override
@@ -113,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         adsManager.destroyBannerAd();
+//        adsManager.destroyNativeAd();
         destroyAppOpenAd();
     }
 
@@ -177,14 +188,29 @@ public class MainActivity extends AppCompatActivity {
             case "huawei-ads-sdk":
                 ads = new String[]{"admob", "google_ad_manager", "huawei"};
                 break;
+            case "yandex-ads-sdk":
+                ads = new String[]{"admob", "google_ad_manager", "yandex"};
+                break;
+            case "appodeal-ads-sdk":
+                ads = new String[]{"admob", "google_ad_manager", "appodeal"};
+                break;
             case "no-ads-sdk":
                 ads = new String[]{"none"};
                 break;
+            case "multi-ads-sdk":
+                ads = new String[]{"admob", "google_ad_manager", "facebook", "applovin_max", "applovin_discovery", "startapp", "unity", "ironsource"};
+                break;
             case "multi-ads-sdk-no-is":
+                ads = new String[]{"admob", "google_ad_manager", "facebook", "applovin_max", "applovin_discovery", "startapp", "unity"};
+                break;
+            case "mega-ads-sdk":
+                ads = new String[]{"admob", "google_ad_manager", "facebook", "applovin_max", "applovin_discovery", "startapp", "unity", "ironsource", "wortise", "pangle", "huawei", "yandex"};
+                break;
+            case "mega-ads-sdk-no-is":
                 ads = new String[]{"admob", "google_ad_manager", "facebook", "applovin_max", "applovin_discovery", "startapp", "unity", "pangle", "huawei", "yandex"};
                 break;
             default:
-                ads = new String[]{"admob", "google_ad_manager", "facebook", "applovin_max", "applovin_discovery", "startapp", "unity", "ironsource", "wortise", "pangle", "huawei", "yandex"};
+                ads = new String[]{"undefined"};
                 break;
         }
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
@@ -240,7 +266,9 @@ public class MainActivity extends AppCompatActivity {
         dialog.setView(view);
         dialog.setCancelable(false);
         dialog.setPositiveButton("Exit", (dialogInterface, i) -> {
-            super.onBackPressed();
+            //super.onBackPressed();
+            finish();
+            System.exit(0);
             adsManager.destroyBannerAd();
             destroyAppOpenAd();
         });
@@ -262,11 +290,11 @@ public class MainActivity extends AppCompatActivity {
             DefaultLifecycleObserver.super.onStart(owner);
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 if (Constant.OPEN_ADS_ON_RESUME) {
-                    if (com.solodroidx.ads.appopen.AppOpenAd.isAppOpenAdLoaded) {
+                    if (AppOpenAd.isAppOpenAdLoaded) {
                         adsManager.showAppOpenAds(() -> {
 
                         });
-                        Log.d(com.solodroidx.ads.appopen.AppOpenAd.TAG, "lifecycleObserver Show App Open Ad");
+                        Log.d(AppOpenAd.TAG, "lifecycleObserver Show App Open Ad");
                     }
                 }
             }, 100);

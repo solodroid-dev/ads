@@ -38,7 +38,7 @@ public class ActivitySplash extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         sharedPref = new SharedPref(this);
         adsManager = new AdsManager(this);
-        adsManager.initializeAd();
+        //adsManager.initializeAd();
         requestConfig();
     }
 

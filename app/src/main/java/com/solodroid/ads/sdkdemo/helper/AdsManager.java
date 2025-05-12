@@ -1,6 +1,7 @@
 package com.solodroid.ads.sdkdemo.helper;
 
 import static com.solodroidx.ads.util.Constant.AD_STATUS_ON;
+import static com.solodroidx.ads.util.Constant.APPODEAL;
 import static com.solodroidx.ads.util.Constant.IRONSOURCE;
 
 import android.app.Activity;
@@ -30,6 +31,7 @@ import com.solodroidx.ads.nativead.NativeAd;
 import com.solodroidx.ads.nativead.NativeAdView;
 import com.solodroidx.ads.nativead.NativeAdViewHolder;
 import com.solodroidx.ads.rewarded.RewardedAd;
+import com.solodroidx.ads.util.Tools;
 
 public class AdsManager {
 
@@ -65,8 +67,9 @@ public class AdsManager {
                 .setStartappAppId(Constant.STARTAPP_APP_ID)
                 .setUnityGameId(Constant.UNITY_GAME_ID)
                 .setIronSourceAppKey(Constant.IRONSOURCE_APP_KEY)
-                .setWortiseAppId(Constant.WORTISE_APP_ID)
+                .setWortiseAppId(Constant.WORTISE_APP_ID, "MkzVBvyZ2aU2ESAd2Qd29ydGlzZS1hZHMtc2Rrz")
                 .setPangleAppId(Constant.PANGLE_APP_ID)
+                .setAppodealAppKey(Constant.APPODEAL_APP_KEY)
                 .setDebug(BuildConfig.DEBUG)
                 .build();
     }
@@ -124,6 +127,8 @@ public class AdsManager {
     public void resumeBannerAd() {
         if (Constant.AD_STATUS.equals(AD_STATUS_ON) && !Constant.IRONSOURCE_BANNER_ID.equals("0")) {
             if (Constant.AD_NETWORK.equals(IRONSOURCE) || Constant.BACKUP_AD_NETWORK.equals(IRONSOURCE)) {
+                loadBannerAd();
+            } else if (Constant.AD_NETWORK.equals(APPODEAL)) {
                 loadBannerAd();
             }
         }
@@ -230,6 +235,10 @@ public class AdsManager {
                 .setDarkTheme(sharedPref.getIsDarkTheme())
                 .build();
     }
+
+//    public void showNativeAdIfAvailable() {
+//        nativeAd.showNativeAdIfAvailable();
+//    }
 
     public void loadNativeAdView(View view) {
         nativeAdView.setView(view)

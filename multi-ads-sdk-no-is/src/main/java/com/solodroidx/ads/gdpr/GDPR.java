@@ -4,7 +4,6 @@ import static com.solodroidx.ads.util.Constant.ADMOB;
 import static com.solodroidx.ads.util.Constant.APPLOVIN_DISCOVERY;
 import static com.solodroidx.ads.util.Constant.APPLOVIN_MAX;
 import static com.solodroidx.ads.util.Constant.GOOGLE_AD_MANAGER;
-import static com.solodroidx.ads.util.Constant.PANGLE;
 import static com.solodroidx.ads.util.Constant.STARTAPP;
 
 import android.annotation.SuppressLint;
@@ -12,8 +11,6 @@ import android.app.Activity;
 import android.util.Log;
 
 import com.applovin.sdk.AppLovinPrivacySettings;
-import com.bytedance.sdk.openadsdk.api.PAGConstant;
-import com.bytedance.sdk.openadsdk.api.init.PAGConfig;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.ump.ConsentDebugSettings;
 import com.google.android.ump.ConsentForm;
@@ -95,10 +92,6 @@ public class GDPR {
             case APPLOVIN_DISCOVERY:
                 //AppLovinPrivacySettings.setIsAgeRestrictedUser(childDirected, activity);
                 AppLovinPrivacySettings.setHasUserConsent(true, activity);
-                break;
-            case PANGLE:
-                PAGConfig.setGDPRConsent(PAGConstant.PAGGDPRConsentType.PAG_GDPR_CONSENT_TYPE_CONSENT);
-                PAGConfig.getGDPRConsent();
                 break;
         }
     }

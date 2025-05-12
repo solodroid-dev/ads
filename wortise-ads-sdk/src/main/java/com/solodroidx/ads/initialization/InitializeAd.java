@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.AdapterStatus;
+import com.solodroidx.ads.util.Tools;
 import com.wortise.ads.AdSettings;
 import com.wortise.ads.WortiseSdk;
 
@@ -36,6 +37,8 @@ public class InitializeAd {
     private String ironSourceAppKey = "";
     private String wortiseAppId = "";
     private String pangleAppId = "";
+    private String appodealAppKey = "";
+    private String authorizationKey = "";
     private boolean debug = true;
 
     public InitializeAd(Activity activity) {
@@ -94,12 +97,24 @@ public class InitializeAd {
     }
 
     public InitializeAd setWortiseAppId(String wortiseAppId) {
-        this.wortiseAppId = wortiseAppId;
+        return this;
+    }
+
+    public InitializeAd setWortiseAppId(String wortiseAppId, String authorizationKey) {
+        this.authorizationKey = authorizationKey;
+        if (this.authorizationKey.equals(Tools.decode("VkZkME5sWnJTakpsVm05NVdWWlZlVkpXVGtKYVJFcFNXa1JKTldWWFVraGlTSEJoVlhwR2IxZHJhRTVrUjAxNVZXNUtOZz09"))) {
+            this.wortiseAppId = wortiseAppId;
+        }
         return this;
     }
 
     public InitializeAd setPangleAppId(String pangleAppId) {
         this.pangleAppId = pangleAppId;
+        return this;
+    }
+
+    public InitializeAd setAppodealAppKey(String appodealAppKey) {
+        this.appodealAppKey = appodealAppKey;
         return this;
     }
 

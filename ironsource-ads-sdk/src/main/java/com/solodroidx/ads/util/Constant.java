@@ -22,6 +22,7 @@ public class Constant {
     public static final String PANGLE = "pangle";
     public static final String HUAWEI = "huawei";
     public static final String YANDEX = "yandex";
+    public static final String APPODEAL = "appodeal";
     public static final String NONE = "none";
 
     //ad bidding

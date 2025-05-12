@@ -4,6 +4,7 @@ import static com.solodroidx.ads.util.Constant.ADMOB;
 import static com.solodroidx.ads.util.Constant.APPLOVIN;
 import static com.solodroidx.ads.util.Constant.APPLOVIN_DISCOVERY;
 import static com.solodroidx.ads.util.Constant.APPLOVIN_MAX;
+import static com.solodroidx.ads.util.Constant.APPODEAL;
 import static com.solodroidx.ads.util.Constant.FACEBOOK;
 import static com.solodroidx.ads.util.Constant.FAN;
 import static com.solodroidx.ads.util.Constant.GOOGLE_AD_MANAGER;
@@ -103,7 +104,6 @@ public class AdapterPost extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             Glide.with(context)
                     .load(p.image.replace(" ", "%20"))
-                    .thumbnail(0.1f)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .centerCrop()
                     .into(vItem.image);
@@ -153,6 +153,7 @@ public class AdapterPost extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case PANGLE:
             case HUAWEI:
             case YANDEX:
+            case APPODEAL:
                 int maxNumberNativeAd;
                 if (totalPosts >= Constant.NATIVE_AD_INTERVAL) {
                     maxNumberNativeAd = (totalPosts / Constant.NATIVE_AD_INTERVAL);

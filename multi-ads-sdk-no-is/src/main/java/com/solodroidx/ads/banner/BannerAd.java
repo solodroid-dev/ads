@@ -11,14 +11,11 @@ import static com.solodroidx.ads.util.Constant.FAN_BIDDING_ADMOB;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_AD_MANAGER;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_APPLOVIN_MAX;
 import static com.solodroidx.ads.util.Constant.GOOGLE_AD_MANAGER;
-import static com.solodroidx.ads.util.Constant.HUAWEI;
 import static com.solodroidx.ads.util.Constant.NONE;
-import static com.solodroidx.ads.util.Constant.PANGLE;
 import static com.solodroidx.ads.util.Constant.STARTAPP;
 import static com.solodroidx.ads.util.Constant.UNITY;
 import static com.solodroidx.ads.util.Constant.UNITY_ADS_BANNER_HEIGHT_MEDIUM;
 import static com.solodroidx.ads.util.Constant.UNITY_ADS_BANNER_WIDTH_MEDIUM;
-import static com.solodroidx.ads.util.Constant.YANDEX;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -29,7 +26,6 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.applovin.adview.AppLovinAdView;
 import com.applovin.mediation.MaxAd;
@@ -40,11 +36,6 @@ import com.applovin.sdk.AppLovinAd;
 import com.applovin.sdk.AppLovinAdLoadListener;
 import com.applovin.sdk.AppLovinAdSize;
 import com.applovin.sdk.AppLovinSdkUtils;
-import com.bytedance.sdk.openadsdk.api.banner.PAGBannerAd;
-import com.bytedance.sdk.openadsdk.api.banner.PAGBannerAdInteractionListener;
-import com.bytedance.sdk.openadsdk.api.banner.PAGBannerAdLoadListener;
-import com.bytedance.sdk.openadsdk.api.banner.PAGBannerRequest;
-import com.bytedance.sdk.openadsdk.api.banner.PAGBannerSize;
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdSize;
 import com.google.android.gms.ads.AdListener;
@@ -52,8 +43,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.admanager.AdManagerAdView;
-import com.huawei.hms.ads.AdParam;
-import com.huawei.hms.ads.BannerAdSize;
 import com.solodroidx.ads.R;
 import com.solodroidx.ads.helper.AppLovinCustomEventBanner;
 import com.solodroidx.ads.util.Tools;
@@ -62,10 +51,6 @@ import com.startapp.sdk.ads.banner.BannerListener;
 import com.unity3d.services.banners.BannerErrorInfo;
 import com.unity3d.services.banners.BannerView;
 import com.unity3d.services.banners.UnityBannerSize;
-import com.yandex.mobile.ads.banner.BannerAdEventListener;
-import com.yandex.mobile.ads.banner.BannerAdView;
-import com.yandex.mobile.ads.common.AdRequestError;
-import com.yandex.mobile.ads.common.ImpressionData;
 
 @SuppressWarnings("deprecation")
 public class BannerAd {
@@ -439,111 +424,6 @@ public class BannerAd {
                     appLovinDiscoveryAdView.addView(this.appLovinAdView);
                     this.appLovinAdView.loadNextAd();
                     break;
-
-                case PANGLE:
-                    RelativeLayout pangleContainerView = activity.findViewById(R.id.pangle_banner_view_container);
-                    PAGBannerSize bannerSize = PAGBannerSize.BANNER_W_320_H_50;
-                    PAGBannerRequest bannerRequest = new PAGBannerRequest(bannerSize);
-                    PAGBannerAd.loadAd(pangleBannerId, bannerRequest, new PAGBannerAdLoadListener() {
-                        @Override
-                        public void onError(int code, String message) {
-                            Log.d(TAG, adNetwork + " Banner Ad " + pangleBannerId + " Error: " + code + " : " + message);
-                            pangleContainerView.setVisibility(View.GONE);
-                            loadBackupBannerAd();
-                        }
-
-                        @Override
-                        public void onAdLoaded(PAGBannerAd bannerAd) {
-                            Log.d(TAG, adNetwork + " Banner Ad Loaded");
-                            if (bannerAd != null) {
-                                pangleContainerView.removeAllViews();
-                                pangleContainerView.addView(bannerAd.getBannerView());
-                                pangleContainerView.setVisibility(View.VISIBLE);
-                                bannerAd.setAdInteractionListener(new PAGBannerAdInteractionListener() {
-                                    @Override
-                                    public void onAdShowed() {
-
-                                    }
-
-                                    @Override
-                                    public void onAdClicked() {
-
-                                    }
-
-                                    @Override
-                                    public void onAdDismissed() {
-
-                                    }
-                                });
-                            }
-                        }
-                    });
-                    break;
-
-                case HUAWEI:
-                    RelativeLayout huaweiContainerView = activity.findViewById(R.id.huawei_banner_view_container);
-                    com.huawei.hms.ads.banner.BannerView bannerView = new com.huawei.hms.ads.banner.BannerView(activity);
-                    bannerView.setAdId(huaweiBannerId);
-                    bannerView.setBannerAdSize(BannerAdSize.BANNER_SIZE_320_50);
-                    huaweiContainerView.addView(bannerView);
-                    AdParam adParam = new AdParam.Builder().build();
-                    bannerView.loadAd(adParam);
-                    bannerView.setAdListener(new com.huawei.hms.ads.AdListener() {
-                        @Override
-                        public void onAdLoaded() {
-                            huaweiContainerView.setVisibility(View.VISIBLE);
-                            Log.d(TAG, adNetwork + " Banner Ad Loaded");
-                        }
-                        @Override
-                        public void onAdFailed(int errorCode) {
-                            huaweiContainerView.setVisibility(View.GONE);
-                            loadBackupBannerAd();
-                            Log.d(TAG, adNetwork + " Failed to Load Banner Ad " + huaweiBannerId + " Error: " + errorCode);
-                        }
-                    });
-                    break;
-
-                case YANDEX:
-                    BannerAdView yandexBannerAdView = activity.findViewById(R.id.yandex_banner_view_container);
-                    yandexBannerAdView.setAdSize(Tools.getYandexAdaptiveInlineBannerAdSize(activity, yandexBannerAdView));
-                    yandexBannerAdView.setAdUnitId(yandexBannerId);
-                    yandexBannerAdView.setBannerAdEventListener(new BannerAdEventListener() {
-                        @Override
-                        public void onAdLoaded() {
-                            yandexBannerAdView.setVisibility(View.VISIBLE);
-                            Log.d(TAG, adNetwork + " Banner Ad Loaded");
-                        }
-
-                        @Override
-                        public void onAdFailedToLoad(@NonNull final AdRequestError adRequestError) {
-                            yandexBannerAdView.setVisibility(View.GONE);
-                            loadBackupBannerAd();
-                            Log.d(TAG, adNetwork + " Failed to Load Banner Ad " + adRequestError);
-                        }
-
-                        @Override
-                        public void onAdClicked() {
-
-                        }
-
-                        @Override
-                        public void onLeftApplication() {
-
-                        }
-
-                        @Override
-                        public void onReturnedToApplication() {
-
-                        }
-
-                        @Override
-                        public void onImpression(@Nullable ImpressionData impressionData) {
-
-                        }
-                    });
-                    final com.yandex.mobile.ads.common.AdRequest adRequest = new com.yandex.mobile.ads.common.AdRequest.Builder().build();
-                    yandexBannerAdView.loadAd(adRequest);
-                    break;
             }
             Log.d(TAG, "Banner Ad is enabled");
         } else {
@@ -781,108 +661,6 @@ public class BannerAd {
                     });
                     appLovinDiscoveryAdView.addView(this.appLovinAdView);
                     this.appLovinAdView.loadNextAd();
-                    break;
-
-                case PANGLE:
-                    RelativeLayout pangleContainerView = activity.findViewById(R.id.pangle_banner_view_container);
-                    PAGBannerSize bannerSize = PAGBannerSize.BANNER_W_320_H_50;
-                    PAGBannerRequest bannerRequest = new PAGBannerRequest(bannerSize);
-                    PAGBannerAd.loadAd(pangleBannerId, bannerRequest, new PAGBannerAdLoadListener() {
-                        @Override
-                        public void onError(int code, String message) {
-                            Log.d(TAG, backupAdNetwork + " [backup] Banner Ad " + pangleBannerId + " Error: " + code + " : " + message);
-                            pangleContainerView.setVisibility(View.GONE);
-                        }
-
-                        @Override
-                        public void onAdLoaded(PAGBannerAd bannerAd) {
-                            Log.d(TAG, backupAdNetwork + " [backup] Banner Ad Loaded");
-                            if (bannerAd != null) {
-                                pangleContainerView.removeAllViews();
-                                pangleContainerView.addView(bannerAd.getBannerView());
-                                pangleContainerView.setVisibility(View.VISIBLE);
-                                bannerAd.setAdInteractionListener(new PAGBannerAdInteractionListener() {
-                                    @Override
-                                    public void onAdShowed() {
-
-                                    }
-
-                                    @Override
-                                    public void onAdClicked() {
-
-                                    }
-
-                                    @Override
-                                    public void onAdDismissed() {
-
-                                    }
-                                });
-                            }
-                        }
-                    });
-                    break;
-
-                case HUAWEI:
-                    RelativeLayout huaweiContainerView = activity.findViewById(R.id.huawei_banner_view_container);
-                    com.huawei.hms.ads.banner.BannerView bannerView = new com.huawei.hms.ads.banner.BannerView(activity);
-                    bannerView.setAdId(huaweiBannerId);
-                    bannerView.setBannerAdSize(BannerAdSize.BANNER_SIZE_320_50);
-                    huaweiContainerView.addView(bannerView);
-                    AdParam adParam = new AdParam.Builder().build();
-                    bannerView.loadAd(adParam);
-                    bannerView.setAdListener(new com.huawei.hms.ads.AdListener() {
-                        @Override
-                        public void onAdLoaded() {
-                            huaweiContainerView.setVisibility(View.VISIBLE);
-                            Log.d(TAG, backupAdNetwork + " [backup] Banner Ad Loaded");
-                        }
-                        @Override
-                        public void onAdFailed(int errorCode) {
-                            huaweiContainerView.setVisibility(View.GONE);
-                            Log.d(TAG, backupAdNetwork + " [backup] Failed to Load Banner Ad " + huaweiBannerId + " Error: " + errorCode);
-                        }
-                    });
-                    break;
-
-                case YANDEX:
-                    BannerAdView yandexBannerAdView = activity.findViewById(R.id.yandex_banner_view_container);
-                    yandexBannerAdView.setAdSize(Tools.getYandexAdaptiveInlineBannerAdSize(activity, yandexBannerAdView));
-                    yandexBannerAdView.setAdUnitId(yandexBannerId);
-                    yandexBannerAdView.setBannerAdEventListener(new BannerAdEventListener() {
-                        @Override
-                        public void onAdLoaded() {
-                            yandexBannerAdView.setVisibility(View.VISIBLE);
-                            Log.d(TAG, backupAdNetwork + " [backup] Banner Ad Loaded");
-                        }
-
-                        @Override
-                        public void onAdFailedToLoad(@NonNull final AdRequestError adRequestError) {
-                            yandexBannerAdView.setVisibility(View.GONE);
-                            Log.d(TAG, backupAdNetwork + " [backup] Failed to Load Banner Ad " + adRequestError);
-                        }
-
-                        @Override
-                        public void onAdClicked() {
-
-                        }
-
-                        @Override
-                        public void onLeftApplication() {
-
-                        }
-
-                        @Override
-                        public void onReturnedToApplication() {
-
-                        }
-
-                        @Override
-                        public void onImpression(@Nullable ImpressionData impressionData) {
-
-                        }
-                    });
-                    final com.yandex.mobile.ads.common.AdRequest adRequest = new com.yandex.mobile.ads.common.AdRequest.Builder().build();
-                    yandexBannerAdView.loadAd(adRequest);
                     break;
 
                 case NONE:

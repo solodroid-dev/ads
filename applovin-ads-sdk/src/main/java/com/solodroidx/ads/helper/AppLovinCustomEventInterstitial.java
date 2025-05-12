@@ -127,7 +127,7 @@ public class AppLovinCustomEventInterstitial implements CustomEventInterstitial,
         this.context = context;
 
         final AppLovinSdk sdk = AppLovinSdk.getInstance(context);
-        sdk.setPluginVersion("AdMob-2.2.1");
+//        sdk.setPluginVersion("AdMob-2.2.1");
 
         // Zones support is available on AppLovin SDK 7.5.0 and higher
         if (AppLovinSdk.VERSION_CODE >= 750 && customEventExtras != null && customEventExtras.containsKey("zone_id")) {

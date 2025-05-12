@@ -18,7 +18,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.admanager.AdManagerAdRequest;
 import com.solodroidx.ads.gdpr.LegacyGDPR;
-import com.yandex.mobile.ads.banner.BannerAdSize;
 
 import java.nio.charset.StandardCharsets;
 
@@ -34,42 +33,6 @@ public class Tools {
         int adWidth = (int) (widthPixels / density);
         // Step 3 - Get adaptive ad size and return for setting on the ad view.
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity, adWidth);
-    }
-
-    public static com.wortise.ads.AdSize getWortiseAdSize(Activity activity) {
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        display.getMetrics(outMetrics);
-        float widthPixels = outMetrics.widthPixels;
-        float density = outMetrics.density;
-        int adWidth = (int) (widthPixels / density);
-        return com.wortise.ads.AdSize.getAnchoredAdaptiveBannerAdSize(activity, adWidth);
-    }
-
-    public static BannerAdSize getYandexAdaptiveInlineBannerAdSize(Activity activity, View view) {
-        final DisplayMetrics displayMetrics = activity.getResources().getDisplayMetrics();
-        final int screenHeight = Math.round(displayMetrics.heightPixels / displayMetrics.density);
-        // Calculate the width of the ad, taking into account the padding in the ad container.
-        int adWidthPixels = view.getWidth();
-        if (adWidthPixels == 0) {
-            // If the ad hasn't been laid out, default to the full screen width
-            adWidthPixels = displayMetrics.widthPixels;
-        }
-        final int adWidth = Math.round(adWidthPixels / displayMetrics.density);
-        // Determine the maximum allowable ad height. The current value is given as an example.
-        final int maxAdHeight = screenHeight / 12;
-
-        return BannerAdSize.inlineSize(activity, adWidth, maxAdHeight);
-    }
-
-    public static BannerAdSize getYandexAdaptiveStickyBannerAdSize(Activity activity, View view) {
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        display.getMetrics(outMetrics);
-        float widthPixels = outMetrics.widthPixels;
-        float density = outMetrics.density;
-        int adWidth = (int) (widthPixels / density);
-        return BannerAdSize.stickySize(activity, adWidth);
     }
 
     public static AdSize getAdSizeMREC() {

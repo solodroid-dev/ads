@@ -11,17 +11,12 @@ import static com.solodroidx.ads.util.Constant.FAN_BIDDING_ADMOB;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_AD_MANAGER;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_APPLOVIN_MAX;
 import static com.solodroidx.ads.util.Constant.GOOGLE_AD_MANAGER;
-import static com.solodroidx.ads.util.Constant.HUAWEI;
-import static com.solodroidx.ads.util.Constant.PANGLE;
 import static com.solodroidx.ads.util.Constant.STARTAPP;
-import static com.solodroidx.ads.util.Constant.YANDEX;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +28,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,13 +41,6 @@ import com.applovin.mediation.nativeAds.MaxNativeAdViewBinder;
 import com.applovin.sdk.AppLovinAd;
 import com.applovin.sdk.AppLovinAdLoadListener;
 import com.applovin.sdk.AppLovinAdSize;
-import com.bumptech.glide.Glide;
-import com.bytedance.sdk.openadsdk.api.nativeAd.PAGImageItem;
-import com.bytedance.sdk.openadsdk.api.nativeAd.PAGMediaView;
-import com.bytedance.sdk.openadsdk.api.nativeAd.PAGNativeAd;
-import com.bytedance.sdk.openadsdk.api.nativeAd.PAGNativeAdInteractionListener;
-import com.bytedance.sdk.openadsdk.api.nativeAd.PAGNativeAdLoadListener;
-import com.bytedance.sdk.openadsdk.api.nativeAd.PAGNativeRequest;
 import com.facebook.ads.AdError;
 import com.facebook.ads.AdOptionsView;
 import com.facebook.ads.NativeAdLayout;
@@ -65,10 +52,6 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.nativead.MediaView;
 import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.android.material.card.MaterialCardView;
-import com.huawei.hms.ads.AdParam;
-import com.huawei.hms.ads.BiddingParam;
-import com.huawei.hms.ads.nativead.NativeAdLoader;
-import com.huawei.hms.ads.nativead.NativeView;
 import com.solodroidx.ads.R;
 import com.solodroidx.ads.helper.AppLovinCustomEventBanner;
 import com.solodroidx.ads.util.AdManagerTemplateView;
@@ -80,13 +63,6 @@ import com.startapp.sdk.ads.nativead.NativeAdDetails;
 import com.startapp.sdk.ads.nativead.NativeAdPreferences;
 import com.startapp.sdk.ads.nativead.StartAppNativeAd;
 import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
-import com.yandex.mobile.ads.common.AdRequestError;
-import com.yandex.mobile.ads.common.ImpressionData;
-import com.yandex.mobile.ads.nativeads.NativeAdEventListener;
-import com.yandex.mobile.ads.nativeads.NativeAdException;
-import com.yandex.mobile.ads.nativeads.NativeAdLoadListener;
-import com.yandex.mobile.ads.nativeads.NativeAdRequestConfiguration;
-import com.yandex.mobile.ads.nativeads.NativeAdViewBinder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,16 +102,6 @@ public class NativeAdViewHolder extends RecyclerView.ViewHolder {
 
     LinearLayout appLovinDiscoveryMrecAd;
     AppLovinAdView appLovinAdView;
-
-    //Pangle
-    FrameLayout pangleNativeAd;
-
-    //Huawei
-    FrameLayout huaweiNativeAd;
-
-    //Yandex
-    FrameLayout yandexNativeAd;
-    com.yandex.mobile.ads.nativeads.NativeAdLoader yandexNativeAdLoader;
 
     private String adStatus = "";
     private String adNetwork = "";
@@ -191,15 +157,6 @@ public class NativeAdViewHolder extends RecyclerView.ViewHolder {
         //AppLovin
         applovinNativeAd = view.findViewById(R.id.applovin_native_ad_container);
         appLovinDiscoveryMrecAd = view.findViewById(R.id.applovin_discovery_mrec_ad_container);
-
-        //Pangle
-        pangleNativeAd = view.findViewById(R.id.pangle_native_ad_container);
-
-        //Huawei
-        huaweiNativeAd = view.findViewById(R.id.huawei_native_ad_container);
-
-        //Yandex
-        yandexNativeAd = view.findViewById(R.id.yandex_native_ad_container);
 
     }
 
@@ -669,150 +626,6 @@ public class NativeAdViewHolder extends RecyclerView.ViewHolder {
                         }
                         break;
 
-                    case PANGLE:
-                        if (pangleNativeAd.getVisibility() != View.VISIBLE) {
-                            PAGNativeRequest request = new PAGNativeRequest();
-                            PAGNativeAd.loadAd(pangleNativeId, request, new PAGNativeAdLoadListener() {
-                                @Override
-                                public void onError(int code, String message) {
-                                    loadBackupNativeAd(context);
-                                    Log.d(TAG, "Pangle Native Ad Error");
-                                }
-
-                                @SuppressLint("InflateParams")
-                                @Override
-                                public void onAdLoaded(PAGNativeAd pagNativeAd) {
-                                    Log.d(TAG, "Pangle Native Ad Loaded");
-                                    View adView;
-                                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                    switch (nativeAdStyle) {
-                                        case Constant.STYLE_NEWS:
-                                        case Constant.STYLE_MEDIUM:
-                                            adView = inflater.inflate(R.layout.gnt_pangle_news_template_view, null);
-                                            break;
-                                        case Constant.STYLE_VIDEO_SMALL:
-                                            adView = inflater.inflate(R.layout.gnt_pangle_video_small_template_view, null);
-                                            break;
-                                        case Constant.STYLE_VIDEO_LARGE:
-                                            adView = inflater.inflate(R.layout.gnt_pangle_video_large_template_view, null);
-                                            break;
-                                        case Constant.STYLE_RADIO:
-                                        case Constant.STYLE_SMALL:
-                                            adView = inflater.inflate(R.layout.gnt_pangle_radio_template_view, null);
-                                            break;
-                                        default:
-                                            adView = inflater.inflate(R.layout.gnt_pangle_medium_template_view, null);
-                                            break;
-                                    }
-                                    populatePangleNativeAdView(context, adView, pagNativeAd);
-                                    pangleNativeAd.removeAllViews();
-                                    pangleNativeAd.addView(adView);
-                                    pangleNativeAd.setVisibility(View.VISIBLE);
-                                    nativeAdViewContainer.setVisibility(View.VISIBLE);
-                                }
-                            });
-                        } else {
-                            Log.d(TAG, "Pangle Native Ad has been loaded");
-                        }
-                        break;
-
-                    case HUAWEI:
-                        if (huaweiNativeAd.getVisibility() != View.VISIBLE) {
-                            NativeAdLoader.Builder builder = new NativeAdLoader.Builder(context, huaweiNativeId);
-                            @SuppressLint("InflateParams") NativeAdLoader nativeAdLoader = builder.setNativeAdLoadedListener(nativeAd -> {
-                                        NativeView nativeView;
-                                        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                        switch (nativeAdStyle) {
-                                            case Constant.STYLE_NEWS:
-                                            case Constant.STYLE_MEDIUM:
-                                                nativeView = (NativeView) inflater.inflate(R.layout.gnt_huawei_news_template_view, null);
-                                                break;
-                                            case Constant.STYLE_VIDEO_SMALL:
-                                                nativeView = (NativeView) inflater.inflate(R.layout.gnt_huawei_video_small_template_view, null);
-                                                break;
-                                            case Constant.STYLE_VIDEO_LARGE:
-                                                nativeView = (NativeView) inflater.inflate(R.layout.gnt_huawei_video_large_template_view, null);
-                                                break;
-                                            case Constant.STYLE_RADIO:
-                                            case Constant.STYLE_SMALL:
-                                                nativeView = (NativeView) inflater.inflate(R.layout.gnt_huawei_radio_template_view, null);
-                                                break;
-                                            default:
-                                                nativeView = (NativeView) inflater.inflate(R.layout.gnt_huawei_medium_template_view, null);
-                                                break;
-                                        }
-                                        populateHuaweiNativeAdView(nativeAd, nativeView);
-                                        huaweiNativeAd.removeAllViews();
-                                        huaweiNativeAd.addView(nativeView);
-                                        huaweiNativeAd.setVisibility(View.VISIBLE);
-                                        nativeAdViewContainer.setVisibility(View.VISIBLE);
-                                        Log.d(TAG, adNetwork + " Native Ad Loaded");
-                                    })
-                                    .setAdListener(new com.huawei.hms.ads.AdListener() {
-                                        @Override
-                                        public void onAdFailed(int errorCode) {
-                                            loadBackupNativeAd(context);
-                                            Log.d(TAG, adNetwork + " Failed to Load Native Ad: " + errorCode);
-                                        }
-                                    }).build();
-                            AdParam.Builder adParamBuilder = new AdParam.Builder();
-                            BiddingParam biddingParam = new BiddingParam();
-                            adParamBuilder.addBiddingParamMap(huaweiNativeId, biddingParam);
-                            adParamBuilder.setTMax(500);
-                            nativeAdLoader.loadAds(new AdParam.Builder().build(), 5);
-                        } else {
-                            Log.d(TAG, "Huawei Native Ad has been loaded");
-                        }
-                        break;
-
-                    case YANDEX:
-                        if (yandexNativeAd.getVisibility() != View.VISIBLE) {
-                            yandexNativeAdLoader = new com.yandex.mobile.ads.nativeads.NativeAdLoader(context);
-                            yandexNativeAdLoader.setNativeAdLoadListener(new NativeAdLoadListener() {
-                                @SuppressLint("InflateParams")
-                                @Override
-                                public void onAdLoaded(@NonNull final com.yandex.mobile.ads.nativeads.NativeAd nativeAd) {
-                                    com.yandex.mobile.ads.nativeads.NativeAdView adView;
-                                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                    switch (nativeAdStyle) {
-                                        case Constant.STYLE_NEWS:
-                                        case Constant.STYLE_MEDIUM:
-                                            adView = (com.yandex.mobile.ads.nativeads.NativeAdView) inflater.inflate(R.layout.gnt_yandex_news_template_view, null);
-                                            break;
-                                        case Constant.STYLE_VIDEO_SMALL:
-                                            adView = (com.yandex.mobile.ads.nativeads.NativeAdView) inflater.inflate(R.layout.gnt_yandex_video_small_template_view, null);
-                                            break;
-                                        case Constant.STYLE_VIDEO_LARGE:
-                                            adView = (com.yandex.mobile.ads.nativeads.NativeAdView) inflater.inflate(R.layout.gnt_yandex_video_large_template_view, null);
-                                            break;
-                                        case Constant.STYLE_RADIO:
-                                        case Constant.STYLE_SMALL:
-                                            adView = (com.yandex.mobile.ads.nativeads.NativeAdView) inflater.inflate(R.layout.gnt_yandex_radio_template_view, null);
-                                            break;
-                                        default:
-                                            adView = (com.yandex.mobile.ads.nativeads.NativeAdView) inflater.inflate(R.layout.gnt_yandex_medium_template_view, null);
-                                            break;
-                                    }
-                                    populateYandexNativeAdView(adView, nativeAd);
-                                    yandexNativeAd.removeAllViews();
-                                    yandexNativeAd.addView(adView);
-                                    yandexNativeAd.setVisibility(View.VISIBLE);
-                                    nativeAdViewContainer.setVisibility(View.VISIBLE);
-                                    Log.d(TAG, "Yandex Native Ad loaded");
-                                }
-
-                                @Override
-                                public void onAdFailedToLoad(@NonNull final AdRequestError error) {
-                                    loadBackupNativeAd(context);
-                                    Log.d(TAG, "Failed to load Yandex Native Ad: " + error.getDescription());
-                                }
-                            });
-                            yandexNativeAdLoader.loadAd(new NativeAdRequestConfiguration.Builder(yandexNativeId).build());
-                        } else {
-                            Log.d(TAG, "Yandex Native Ad has been loaded");
-                        }
-                        break;
-
                     default:
                         break;
 
@@ -1150,147 +963,6 @@ public class NativeAdViewHolder extends RecyclerView.ViewHolder {
                         }
                         break;
 
-                    case PANGLE:
-                        if (pangleNativeAd.getVisibility() != View.VISIBLE) {
-                            PAGNativeRequest request = new PAGNativeRequest();
-                            PAGNativeAd.loadAd(pangleNativeId, request, new PAGNativeAdLoadListener() {
-                                @Override
-                                public void onError(int code, String message) {
-                                    Log.d(TAG, "Pangle Native Ad Error");
-                                }
-
-                                @SuppressLint("InflateParams")
-                                @Override
-                                public void onAdLoaded(PAGNativeAd pagNativeAd) {
-                                    Log.d(TAG, "Pangle Native Ad Loaded");
-                                    View adView;
-                                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                    switch (nativeAdStyle) {
-                                        case Constant.STYLE_NEWS:
-                                        case Constant.STYLE_MEDIUM:
-                                            adView = inflater.inflate(R.layout.gnt_pangle_news_template_view, null);
-                                            break;
-                                        case Constant.STYLE_VIDEO_SMALL:
-                                            adView = inflater.inflate(R.layout.gnt_pangle_video_small_template_view, null);
-                                            break;
-                                        case Constant.STYLE_VIDEO_LARGE:
-                                            adView = inflater.inflate(R.layout.gnt_pangle_video_large_template_view, null);
-                                            break;
-                                        case Constant.STYLE_RADIO:
-                                        case Constant.STYLE_SMALL:
-                                            adView = inflater.inflate(R.layout.gnt_pangle_radio_template_view, null);
-                                            break;
-                                        default:
-                                            adView = inflater.inflate(R.layout.gnt_pangle_medium_template_view, null);
-                                            break;
-                                    }
-                                    populatePangleNativeAdView(context, adView, pagNativeAd);
-                                    pangleNativeAd.removeAllViews();
-                                    pangleNativeAd.addView(adView);
-                                    pangleNativeAd.setVisibility(View.VISIBLE);
-                                    nativeAdViewContainer.setVisibility(View.VISIBLE);
-                                }
-                            });
-                        } else {
-                            Log.d(TAG, "Pangle Native Ad has been loaded");
-                        }
-                        break;
-
-                    case HUAWEI:
-                        if (huaweiNativeAd.getVisibility() != View.VISIBLE) {
-                            NativeAdLoader.Builder builder = new NativeAdLoader.Builder(context, huaweiNativeId);
-                            @SuppressLint("InflateParams") NativeAdLoader nativeAdLoader = builder.setNativeAdLoadedListener(nativeAd -> {
-                                        NativeView nativeView;
-                                        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                        switch (nativeAdStyle) {
-                                            case Constant.STYLE_NEWS:
-                                            case Constant.STYLE_MEDIUM:
-                                                nativeView = (NativeView) inflater.inflate(R.layout.gnt_huawei_news_template_view, null);
-                                                break;
-                                            case Constant.STYLE_VIDEO_SMALL:
-                                                nativeView = (NativeView) inflater.inflate(R.layout.gnt_huawei_video_small_template_view, null);
-                                                break;
-                                            case Constant.STYLE_VIDEO_LARGE:
-                                                nativeView = (NativeView) inflater.inflate(R.layout.gnt_huawei_video_large_template_view, null);
-                                                break;
-                                            case Constant.STYLE_RADIO:
-                                            case Constant.STYLE_SMALL:
-                                                nativeView = (NativeView) inflater.inflate(R.layout.gnt_huawei_radio_template_view, null);
-                                                break;
-                                            default:
-                                                nativeView = (NativeView) inflater.inflate(R.layout.gnt_huawei_medium_template_view, null);
-                                                break;
-                                        }
-                                        populateHuaweiNativeAdView(nativeAd, nativeView);
-                                        huaweiNativeAd.removeAllViews();
-                                        huaweiNativeAd.addView(nativeView);
-                                        huaweiNativeAd.setVisibility(View.VISIBLE);
-                                        nativeAdViewContainer.setVisibility(View.VISIBLE);
-                                        Log.d(TAG, adNetwork + " Native Ad Loaded");
-                                    })
-                                    .setAdListener(new com.huawei.hms.ads.AdListener() {
-                                        @Override
-                                        public void onAdFailed(int errorCode) {
-                                            Log.d(TAG, adNetwork + " Failed to Load Native Ad: " + errorCode);
-                                        }
-                                    }).build();
-                            AdParam.Builder adParamBuilder = new AdParam.Builder();
-                            BiddingParam biddingParam = new BiddingParam();
-                            adParamBuilder.addBiddingParamMap(huaweiNativeId, biddingParam);
-                            adParamBuilder.setTMax(500);
-                            nativeAdLoader.loadAds(new AdParam.Builder().build(), 5);
-                        } else {
-                            Log.d(TAG, "Huawei Native Ad has been loaded");
-                        }
-                        break;
-
-                    case YANDEX:
-                        if (yandexNativeAd.getVisibility() != View.VISIBLE) {
-                            yandexNativeAdLoader = new com.yandex.mobile.ads.nativeads.NativeAdLoader(context);
-                            yandexNativeAdLoader.setNativeAdLoadListener(new NativeAdLoadListener() {
-                                @SuppressLint("InflateParams")
-                                @Override
-                                public void onAdLoaded(@NonNull final com.yandex.mobile.ads.nativeads.NativeAd nativeAd) {
-                                    com.yandex.mobile.ads.nativeads.NativeAdView adView;
-                                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                    switch (nativeAdStyle) {
-                                        case Constant.STYLE_NEWS:
-                                        case Constant.STYLE_MEDIUM:
-                                            adView = (com.yandex.mobile.ads.nativeads.NativeAdView) inflater.inflate(R.layout.gnt_yandex_news_template_view, null);
-                                            break;
-                                        case Constant.STYLE_VIDEO_SMALL:
-                                            adView = (com.yandex.mobile.ads.nativeads.NativeAdView) inflater.inflate(R.layout.gnt_yandex_video_small_template_view, null);
-                                            break;
-                                        case Constant.STYLE_VIDEO_LARGE:
-                                            adView = (com.yandex.mobile.ads.nativeads.NativeAdView) inflater.inflate(R.layout.gnt_yandex_video_large_template_view, null);
-                                            break;
-                                        case Constant.STYLE_RADIO:
-                                        case Constant.STYLE_SMALL:
-                                            adView = (com.yandex.mobile.ads.nativeads.NativeAdView) inflater.inflate(R.layout.gnt_yandex_radio_template_view, null);
-                                            break;
-                                        default:
-                                            adView = (com.yandex.mobile.ads.nativeads.NativeAdView) inflater.inflate(R.layout.gnt_yandex_medium_template_view, null);
-                                            break;
-                                    }
-                                    populateYandexNativeAdView(adView, nativeAd);
-                                    yandexNativeAd.removeAllViews();
-                                    yandexNativeAd.addView(adView);
-                                    yandexNativeAd.setVisibility(View.VISIBLE);
-                                    nativeAdViewContainer.setVisibility(View.VISIBLE);
-                                    Log.d(TAG, "Yandex Native Ad loaded");
-                                }
-
-                                @Override
-                                public void onAdFailedToLoad(@NonNull final AdRequestError error) {
-                                    Log.d(TAG, "Failed to load Yandex Native Ad: " + error.getDescription());
-                                }
-                            });
-                            yandexNativeAdLoader.loadAd(new NativeAdRequestConfiguration.Builder(yandexNativeId).build());
-                        } else {
-                            Log.d(TAG, "Yandex Native Ad has been loaded");
-                        }
-                        break;
-
                     default:
                         nativeAdViewContainer.setVisibility(View.GONE);
                         break;
@@ -1513,152 +1185,6 @@ public class NativeAdViewHolder extends RecyclerView.ViewHolder {
         }
 
         nativeAdView.setNativeAd(nativeAd);
-    }
-
-    private void populatePangleNativeAdView(Context context, View view, PAGNativeAd pagNativeAd) {
-        LinearLayout pangleNativeBackground = view.findViewById(R.id.pangle_native_background);
-        if (darkTheme) {
-            pangleNativeBackground.setBackgroundResource(nativeBackgroundDark);
-        } else {
-            pangleNativeBackground.setBackgroundResource(nativeBackgroundLight);
-        }
-        TextView mTitle = view.findViewById(R.id.pangle_native_title);
-        TextView mDescription = view.findViewById(R.id.pangle_native_description);
-        ImageView mIcon = view.findViewById(R.id.pangle_native_icon);
-        ImageView mDislike = view.findViewById(R.id.ad_dislike);
-        Button mCreativeButton = view.findViewById(R.id.pangle_native_button);
-        FrameLayout mImageOrVideoView = view.findViewById(R.id.pangle_native_image);
-
-        mTitle.setText(pagNativeAd.getNativeAdData().getTitle());
-
-        mDescription.setText(pagNativeAd.getNativeAdData().getDescription());
-
-        PAGImageItem icon = pagNativeAd.getNativeAdData().getIcon();
-        if (icon != null && icon.getImageUrl() != null) {
-            Glide.with(context).load(icon.getImageUrl()).into(mIcon);
-        }
-
-        PAGMediaView video = pagNativeAd.getNativeAdData().getMediaView();
-        mImageOrVideoView.addView(video);
-
-        mCreativeButton.setText(TextUtils.isEmpty(pagNativeAd.getNativeAdData().getButtonText()) ? "Download" : pagNativeAd.getNativeAdData().getButtonText());
-        List<View> creativeViewList = new ArrayList<>();
-        creativeViewList.add(mCreativeButton);
-        creativeViewList.add(mIcon);
-        creativeViewList.add(mTitle);
-        creativeViewList.add(mDescription);
-        creativeViewList.add(mImageOrVideoView);
-
-        pagNativeAd.registerViewForInteraction((ViewGroup) view, creativeViewList, null, mDislike, new PAGNativeAdInteractionListener() {
-            @Override
-            public void onAdShowed() {
-
-            }
-
-            @Override
-            public void onAdClicked() {
-
-            }
-
-            @Override
-            public void onAdDismissed() {
-
-            }
-        });
-    }
-
-    private void populateHuaweiNativeAdView(com.huawei.hms.ads.nativead.NativeAd nativeAd, NativeView nativeView) {
-
-        LinearLayout huaweiNativeBackground = nativeView.findViewById(R.id.huawei_native_background);
-        if (darkTheme) {
-            huaweiNativeBackground.setBackgroundResource(nativeBackgroundDark);
-        } else {
-            huaweiNativeBackground.setBackgroundResource(nativeBackgroundLight);
-        }
-
-        // Register and populate the title view.
-        nativeView.setTitleView(nativeView.findViewById(R.id.huawei_native_title));
-        ((TextView) nativeView.getTitleView()).setText(nativeAd.getTitle());
-        // Register and populate the multimedia view.
-        nativeView.setMediaView(nativeView.findViewById(R.id.huawei_native_media_view));
-        nativeView.getMediaView().setMediaContent(nativeAd.getMediaContent());
-        // Register and populate other asset views.
-        nativeView.setAdSourceView(nativeView.findViewById(R.id.huawei_native_description));
-
-        nativeView.setCallToActionView(nativeView.findViewById(R.id.huawei_native_button));
-        if (null != nativeAd.getAdSource()) {
-            ((TextView) nativeView.getAdSourceView()).setText(nativeAd.getAdSource());
-        }
-        nativeView.getAdSourceView().setVisibility(null != nativeAd.getAdSource() ? View.VISIBLE : View.INVISIBLE);
-        if (null != nativeAd.getCallToAction()) {
-            ((Button) nativeView.getCallToActionView()).setText(nativeAd.getCallToAction());
-        }
-        nativeView.getCallToActionView().setVisibility(null != nativeAd.getCallToAction() ? View.VISIBLE : View.INVISIBLE);
-
-        // Register the native ad object.
-        nativeView.setNativeAd(nativeAd);
-    }
-
-    private void populateYandexNativeAdView(com.yandex.mobile.ads.nativeads.NativeAdView nativeAdView, com.yandex.mobile.ads.nativeads.NativeAd nativeAd) {
-        LinearLayout yandexNativeBackground = nativeAdView.findViewById(R.id.yandex_native_background);
-        if (darkTheme) {
-            yandexNativeBackground.setBackgroundResource(nativeBackgroundDark);
-        } else {
-            yandexNativeBackground.setBackgroundResource(nativeBackgroundLight);
-        }
-        TextView title = nativeAdView.findViewById(R.id.yandex_native_title);
-        TextView body = nativeAdView.findViewById(R.id.yandex_native_description);
-        ImageView icon = nativeAdView.findViewById(R.id.yandex_native_icon);
-        Button button = nativeAdView.findViewById(R.id.yandex_native_button);
-        com.yandex.mobile.ads.nativeads.MediaView mediaView = nativeAdView.findViewById(R.id.yandex_media_view);
-
-        TextView sponsored = nativeAdView.findViewById(R.id.yandex_sponsored);
-        TextView domain = nativeAdView.findViewById(R.id.yandex_domain);
-        TextView price = nativeAdView.findViewById(R.id.yandex_price);
-        TextView disclaimer = nativeAdView.findViewById(R.id.yandex_disclaimer);
-        ImageView feedback = nativeAdView.findViewById(R.id.yandex_feedback);
-        ImageView favicon = nativeAdView.findViewById(R.id.yandex_favicon);
-
-        NativeAdViewBinder.Builder nativeAdViewBinder = new NativeAdViewBinder.Builder(nativeAdView);
-        nativeAdViewBinder.setMediaView(mediaView);
-        nativeAdViewBinder.setBodyView(body);
-        nativeAdViewBinder.setCallToActionView(button);
-        nativeAdViewBinder.setDomainView(domain);
-        nativeAdViewBinder.setFaviconView(favicon);
-        nativeAdViewBinder.setFeedbackView(feedback);
-        nativeAdViewBinder.setIconView(icon);
-        nativeAdViewBinder.setMediaView(mediaView);
-        nativeAdViewBinder.setPriceView(price);
-        nativeAdViewBinder.setSponsoredView(sponsored);
-        nativeAdViewBinder.setTitleView(title);
-        nativeAdViewBinder.setWarningView(disclaimer);
-        try {
-            nativeAd.bindNativeAd(nativeAdViewBinder.build());
-            nativeAd.setNativeAdEventListener(new NativeAdEventListener() {
-                @Override
-                public void onAdClicked() {
-
-                }
-
-                @Override
-                public void onLeftApplication() {
-
-                }
-
-                @Override
-                public void onReturnedToApplication() {
-
-                }
-
-                @Override
-                public void onImpression(@Nullable ImpressionData impressionData) {
-
-                }
-            });
-        } catch (NativeAdException e) {
-            throw new RuntimeException(e);
-        }
-
     }
 
 }

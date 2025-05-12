@@ -13,33 +13,20 @@ import static com.solodroidx.ads.util.Constant.YANDEX;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdListener;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxAppOpenAd;
-import com.bytedance.sdk.openadsdk.api.open.PAGAppOpenAd;
-import com.bytedance.sdk.openadsdk.api.open.PAGAppOpenAdInteractionListener;
-import com.bytedance.sdk.openadsdk.api.open.PAGAppOpenAdLoadListener;
-import com.bytedance.sdk.openadsdk.api.open.PAGAppOpenRequest;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.admanager.AdManagerAdRequest;
 import com.solodroidx.ads.listener.OnShowAdCompleteListener;
-import com.yandex.mobile.ads.appopenad.AppOpenAdEventListener;
-import com.yandex.mobile.ads.appopenad.AppOpenAdLoadListener;
-import com.yandex.mobile.ads.appopenad.AppOpenAdLoader;
-import com.yandex.mobile.ads.common.AdRequestConfiguration;
-import com.yandex.mobile.ads.common.AdRequestError;
-import com.yandex.mobile.ads.common.ImpressionData;
 
 public class AppOpenAd {
 
@@ -47,9 +34,6 @@ public class AppOpenAd {
     public static boolean isAppOpenAdLoaded = false;
     public com.google.android.gms.ads.appopen.AppOpenAd appOpenAd = null;
     public MaxAppOpenAd maxAppOpenAd = null;
-    public PAGAppOpenAd pangleAppOpenAd = null;
-    AppOpenAdLoader appOpenAdLoader;
-    private com.yandex.mobile.ads.appopenad.AppOpenAd yandexAppOpenAd = null;
     AppOpenAdMob appOpenAdMob;
     AppOpenAdManager appOpenAdManager;
     AppOpenAdAppLovin appOpenAdAppLovin;
@@ -446,55 +430,6 @@ public class AppOpenAd {
                     maxAppOpenAd.loadAd();
                     break;
 
-                case PANGLE:
-                    PAGAppOpenRequest request = new PAGAppOpenRequest();
-                    request.setTimeout(3000);
-                    PAGAppOpenAd.loadAd(pangleAppOpenId, request, new PAGAppOpenAdLoadListener() {
-                        @Override
-                        public void onAdLoaded(PAGAppOpenAd ad) {
-                            pangleAppOpenAd = ad;
-                            if (withListener) {
-                                showAppOpenAd(onShowAdCompleteListener);
-                            }
-                            new Handler(Looper.getMainLooper()).postDelayed(()-> isAppOpenAdLoaded = true, 2000);
-                            Log.d(TAG, "[" + adNetwork + "] " + "app open ad loaded");
-                        }
-
-                        @Override
-                        public void onError(int code, String message) {
-                            pangleAppOpenAd = null;
-                            isAppOpenAdLoaded = false;
-                            loadBackupAppOpenAd(withListener, onShowAdCompleteListener);
-                            Log.d(TAG, "[" + adNetwork + "] " + "failed to load app open ad : " + message);
-                        }
-                    });
-                    break;
-
-                case YANDEX:
-                    appOpenAdLoader = new AppOpenAdLoader(activity);
-                    appOpenAdLoader.setAdLoadListener(new AppOpenAdLoadListener() {
-                        @Override
-                        public void onAdLoaded(@NonNull com.yandex.mobile.ads.appopenad.AppOpenAd ad) {
-                            yandexAppOpenAd = ad;
-                            isAppOpenAdLoaded = false;
-                            if (withListener) {
-                                showAppOpenAd(onShowAdCompleteListener);
-                            }
-                            Log.d(TAG, "[" + adNetwork + "] " + "app open ad loaded");
-                        }
-
-                        @Override
-                        public void onAdFailedToLoad(@NonNull AdRequestError adRequestError) {
-                            yandexAppOpenAd = null;
-                            isAppOpenAdLoaded = false;
-                            loadBackupAppOpenAd(withListener, onShowAdCompleteListener);
-                            Log.d(TAG, "[" + adNetwork + "] " + "failed to load app open ad : " + adRequestError);
-                        }
-                    });
-                    AdRequestConfiguration adRequestConfiguration = new AdRequestConfiguration.Builder(yandexAppOpenId).build();
-                    appOpenAdLoader.loadAd(adRequestConfiguration);
-                    break;
-
                 default:
                     loadBackupAppOpenAd(withListener, onShowAdCompleteListener);
                     Log.d(TAG, "[" + adNetwork + "] " + "does not Support App Open Ad Format, try to load Backup Ads");
@@ -591,80 +526,6 @@ public class AppOpenAd {
                         }
                     });
                     maxAppOpenAd.showAd();
-                } else {
-                    showBackupAppOpenAd(onShowAdCompleteListener);
-                    Log.d(TAG, "[" + adNetwork + "] " + " Failed to Show App Open Ad, try to show Backup Ads");
-                }
-                break;
-
-            case PANGLE:
-                if (pangleAppOpenAd != null) {
-                    pangleAppOpenAd.setAdInteractionListener(new PAGAppOpenAdInteractionListener() {
-                        @Override
-                        public void onAdShowed() {
-                            Log.d(TAG, "[" + adNetwork + "] " + "show app open ad");
-                        }
-
-                        @Override
-                        public void onAdClicked() {
-
-                        }
-
-                        @Override
-                        public void onAdDismissed() {
-                            pangleAppOpenAd = null;
-                            if (withListener) {
-                                onShowAdCompleteListener.onShowAdComplete();
-                            } else {
-                                loadAppOpenAd(false, onShowAdCompleteListener);
-                            }
-                            Log.d(TAG, "[" + adNetwork + "] " + "close app open ad");
-                        }
-                    });
-                    pangleAppOpenAd.show(activity);
-                } else {
-                    showBackupAppOpenAd(onShowAdCompleteListener);
-                    Log.d(TAG, "[" + adNetwork + "] " + " Failed to Show App Open Ad, try to show Backup Ads");
-                }
-                break;
-
-            case YANDEX:
-                if (yandexAppOpenAd != null) {
-                    yandexAppOpenAd.setAdEventListener(new AppOpenAdEventListener() {
-                        @Override
-                        public void onAdShown() {
-                            Log.d(TAG, "[" + adNetwork + "] " + "show app open ad");
-                        }
-
-                        @Override
-                        public void onAdFailedToShow(@NonNull com.yandex.mobile.ads.common.AdError adError) {
-                            yandexAppOpenAd = null;
-                            showBackupAppOpenAd(onShowAdCompleteListener);
-                            Log.d(TAG, "[" + adNetwork + "] " + "Failed to Show App Open Ad Full Screen Content: " + adError);
-                        }
-
-                        @Override
-                        public void onAdDismissed() {
-                            yandexAppOpenAd = null;
-                            if (withListener) {
-                                onShowAdCompleteListener.onShowAdComplete();
-                            } else {
-                                loadAppOpenAd(false, onShowAdCompleteListener);
-                            }
-                            Log.d(TAG, "[" + adNetwork + "] " + "close app open ad");
-                        }
-
-                        @Override
-                        public void onAdClicked() {
-
-                        }
-
-                        @Override
-                        public void onAdImpression(@Nullable ImpressionData impressionData) {
-
-                        }
-                    });
-                    yandexAppOpenAd.show(activity);
                 } else {
                     showBackupAppOpenAd(onShowAdCompleteListener);
                     Log.d(TAG, "[" + adNetwork + "] " + " Failed to Show App Open Ad, try to show Backup Ads");
@@ -784,53 +645,6 @@ public class AppOpenAd {
                     maxAppOpenAd.loadAd();
                     break;
 
-                case PANGLE:
-                    PAGAppOpenRequest request = new PAGAppOpenRequest();
-                    request.setTimeout(3000);
-                    PAGAppOpenAd.loadAd(pangleAppOpenId, request, new PAGAppOpenAdLoadListener() {
-                        @Override
-                        public void onAdLoaded(PAGAppOpenAd ad) {
-                            pangleAppOpenAd = ad;
-                            if (withListener) {
-                                showAppOpenAd(onShowAdCompleteListener);
-                            }
-                            new Handler(Looper.getMainLooper()).postDelayed(()-> isAppOpenAdLoaded = true, 2000);
-                            Log.d(TAG, "[" + backupAdNetwork + "] [backup] " + "app open ad loaded");
-                        }
-
-                        @Override
-                        public void onError(int code, String message) {
-                            pangleAppOpenAd = null;
-                            isAppOpenAdLoaded = false;
-                            Log.d(TAG, "[" + backupAdNetwork + "] [backup] " + "failed to load app open ad : " + message);
-                        }
-                    });
-                    break;
-
-                case YANDEX:
-                    appOpenAdLoader = new AppOpenAdLoader(activity);
-                    appOpenAdLoader.setAdLoadListener(new AppOpenAdLoadListener() {
-                        @Override
-                        public void onAdLoaded(@NonNull com.yandex.mobile.ads.appopenad.AppOpenAd ad) {
-                            yandexAppOpenAd = ad;
-                            isAppOpenAdLoaded = true;
-                            if (withListener) {
-                                showAppOpenAd(onShowAdCompleteListener);
-                            }
-                            Log.d(TAG, "[" + backupAdNetwork + "] [backup] " + "app open ad loaded");
-                        }
-
-                        @Override
-                        public void onAdFailedToLoad(@NonNull AdRequestError adRequestError) {
-                            yandexAppOpenAd = null;
-                            isAppOpenAdLoaded = false;
-                            Log.d(TAG, "[" + backupAdNetwork + "] [backup] " + "failed to load app open ad : " + adRequestError);
-                        }
-                    });
-                    AdRequestConfiguration adRequestConfiguration = new AdRequestConfiguration.Builder(yandexAppOpenId).build();
-                    appOpenAdLoader.loadAd(adRequestConfiguration);
-                    break;
-
                 default:
                     onShowAdCompleteListener.onShowAdComplete();
                     Log.d(TAG, "[" + backupAdNetwork + "] [backup] " + "Selected Ad Network does not Support App Open Ad Format");
@@ -927,78 +741,6 @@ public class AppOpenAd {
                 }
                 break;
 
-            case PANGLE:
-                if (pangleAppOpenAd != null) {
-                    pangleAppOpenAd.setAdInteractionListener(new PAGAppOpenAdInteractionListener() {
-                        @Override
-                        public void onAdShowed() {
-                            Log.d(TAG, "[" + backupAdNetwork + "] [backup] " + "show app open ad");
-                        }
-
-                        @Override
-                        public void onAdClicked() {
-
-                        }
-
-                        @Override
-                        public void onAdDismissed() {
-                            pangleAppOpenAd = null;
-                            if (withListener) {
-                                onShowAdCompleteListener.onShowAdComplete();
-                            } else {
-                                loadAppOpenAd(false, onShowAdCompleteListener);
-                            }
-                            Log.d(TAG, "[" + backupAdNetwork + "] [backup] " + "close app open ad");
-                        }
-                    });
-                    pangleAppOpenAd.show(activity);
-                } else {
-                    onShowAdCompleteListener.onShowAdComplete();
-                }
-                break;
-
-            case YANDEX:
-                if (yandexAppOpenAd != null) {
-                    yandexAppOpenAd.setAdEventListener(new AppOpenAdEventListener() {
-                        @Override
-                        public void onAdShown() {
-                            Log.d(TAG, "[" + backupAdNetwork + "] [backup] " + "show app open ad");
-                        }
-
-                        @Override
-                        public void onAdFailedToShow(@NonNull com.yandex.mobile.ads.common.AdError adError) {
-                            yandexAppOpenAd = null;
-                            Log.d(TAG, "[" + backupAdNetwork + "] [backup] " + "Failed to Show App Open Ad Full Screen Content: " + adError);
-                        }
-
-                        @Override
-                        public void onAdDismissed() {
-                            yandexAppOpenAd = null;
-                            if (withListener) {
-                                onShowAdCompleteListener.onShowAdComplete();
-                            } else {
-                                loadAppOpenAd(false, onShowAdCompleteListener);
-                            }
-                            Log.d(TAG, "[" + backupAdNetwork + "] [backup] " + "close app open ad");
-                        }
-
-                        @Override
-                        public void onAdClicked() {
-
-                        }
-
-                        @Override
-                        public void onAdImpression(@Nullable ImpressionData impressionData) {
-
-                        }
-                    });
-                    yandexAppOpenAd.show(activity);
-                } else {
-                    showBackupAppOpenAd(onShowAdCompleteListener);
-                    Log.d(TAG, "[" + adNetwork + "] " + " Failed to Show App Open Ad, try to show Backup Ads");
-                }
-                break;
-
             default:
                 break;
         }
@@ -1014,19 +756,6 @@ public class AppOpenAd {
                 case FAN_BIDDING_AD_MANAGER:
                     if (appOpenAd != null) {
                         appOpenAd = null;
-                    }
-                    break;
-
-                case PANGLE:
-                    if (pangleAppOpenAd != null) {
-                        pangleAppOpenAd = null;
-                    }
-                    break;
-
-                case YANDEX:
-                    if (yandexAppOpenAd != null) {
-                        yandexAppOpenAd.setAdEventListener(null);
-                        yandexAppOpenAd = null;
                     }
                     break;
 

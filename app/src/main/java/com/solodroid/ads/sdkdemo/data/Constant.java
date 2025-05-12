@@ -47,6 +47,7 @@ public class Constant {
     public static final String IRONSOURCE_BANNER_ID = "DefaultBanner";
     public static final String IRONSOURCE_INTERSTITIAL_ID = "DefaultInterstitial";
     public static final String IRONSOURCE_REWARDED_ID = "DefaultRewardedVideo";
+    public static final String IRONSOURCE_NATIVE_ID = "DefaultNativeAd";
 
     public static final String WORTISE_APP_ID = "test-app-id";
     public static final String WORTISE_BANNER_ID = "test-banner";
@@ -72,6 +73,8 @@ public class Constant {
     public static final String YANDEX_REWARDED_ID = "demo-rewarded-yandex";
     public static final String YANDEX_NATIVE_ID = "demo-native-app-yandex";
     public static final String YANDEX_APP_OPEN_AD_ID = "demo-appopenad-yandex";
+
+    public static final String APPODEAL_APP_KEY = "7e96c95c3fae8d8dac0e7f2e8ca71686289cccc5857e556f";
 
     public static String NATIVE_STYLE = "default";
     public static final String STYLE_NEWS = "news";

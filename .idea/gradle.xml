@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="testRunner" value="CHOOSE_PER_TEST" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/admob-ads-sdk" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/applovin-ads-sdk" />
+            <option value="$PROJECT_DIR$/facebook-ads-sdk" />
+            <option value="$PROJECT_DIR$/huawei-ads-sdk" />
+            <option value="$PROJECT_DIR$/ironsource-ads-sdk" />
+            <option value="$PROJECT_DIR$/mega-ads-sdk" />
+            <option value="$PROJECT_DIR$/mega-ads-sdk-no-is" />
+            <option value="$PROJECT_DIR$/multi-ads-sdk" />
+            <option value="$PROJECT_DIR$/multi-ads-sdk-no-is" />
+            <option value="$PROJECT_DIR$/no-ads-sdk" />
+            <option value="$PROJECT_DIR$/pangle-ads-sdk" />
+            <option value="$PROJECT_DIR$/startapp-ads-sdk" />
+            <option value="$PROJECT_DIR$/unity-ads-sdk" />
+            <option value="$PROJECT_DIR$/wortise-ads-sdk" />
+            <option value="$PROJECT_DIR$/yandex-ads-sdk" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

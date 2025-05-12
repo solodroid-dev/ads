@@ -72,7 +72,7 @@ public class AppLovinCustomEventBanner implements CustomEventBanner {
         final AppLovinAdSize appLovinAdSize = appLovinAdSizeFromAdMobAdSize(adSize);
         if (appLovinAdSize != null) {
             final AppLovinSdk sdk = AppLovinSdk.getInstance(context);
-            sdk.setPluginVersion("AdMob-2.2.1");
+//            sdk.setPluginVersion("AdMob-2.2.1");
 
             // Zones support is available on AppLovin SDK 7.5.0 and higher
             final String zoneId;

@@ -41,6 +41,7 @@ public class InitializeAd {
     private String ironSourceAppKey = "";
     private String wortiseAppId = "";
     private String pangleAppId = "";
+    private String appodealAppKey = "";
     private boolean debug = true;
 
     public InitializeAd(Activity activity) {
@@ -99,12 +100,20 @@ public class InitializeAd {
     }
 
     public InitializeAd setWortiseAppId(String wortiseAppId) {
-        this.wortiseAppId = wortiseAppId;
+        return this;
+    }
+
+    public InitializeAd setWortiseAppId(String wortiseAppId, String authorizationKey) {
         return this;
     }
 
     public InitializeAd setPangleAppId(String pangleAppId) {
         this.pangleAppId = pangleAppId;
+        return this;
+    }
+
+    public InitializeAd setAppodealAppKey(String appodealAppKey) {
+        this.appodealAppKey = appodealAppKey;
         return this;
     }
 
@@ -149,10 +158,8 @@ public class InitializeAd {
                     break;
 
                 case APPLOVIN_DISCOVERY:
-                    AppLovinSdkInitializationConfiguration initConfigAppLovinDiscovery = AppLovinSdkInitializationConfiguration.builder(appLovinSdkKey, activity)
-                            .build();
+                    AppLovinSdkInitializationConfiguration initConfigAppLovinDiscovery = AppLovinSdkInitializationConfiguration.builder(appLovinSdkKey, activity).build();
                     AppLovinSdk.getInstance(activity).initialize(initConfigAppLovinDiscovery, sdkConfig -> {
-
                     });
                     break;
             }
@@ -186,14 +193,19 @@ public class InitializeAd {
                 case APPLOVIN:
                 case APPLOVIN_MAX:
                 case FAN_BIDDING_APPLOVIN_MAX:
-                    AppLovinSdk.getInstance(activity).setMediationProvider(AppLovinMediationProvider.MAX);
-                    AppLovinSdk.getInstance(activity).initializeSdk(config -> {
+                    AppLovinSdkInitializationConfiguration initConfigAppLovinMax = AppLovinSdkInitializationConfiguration.builder(appLovinSdkKey, activity)
+                            .setMediationProvider(AppLovinMediationProvider.MAX)
+                            .build();
+                    AppLovinSdk.getInstance(activity).initialize(initConfigAppLovinMax, sdkConfig -> {
+
                     });
                     AudienceNetworkInitializeHelper.initialize(activity);
                     break;
 
                 case APPLOVIN_DISCOVERY:
-                    AppLovinSdk.initializeSdk(activity);
+                    AppLovinSdkInitializationConfiguration initConfigAppLovinDiscovery = AppLovinSdkInitializationConfiguration.builder(appLovinSdkKey, activity).build();
+                    AppLovinSdk.getInstance(activity).initialize(initConfigAppLovinDiscovery, sdkConfig -> {
+                    });
                     break;
 
                 case NONE:

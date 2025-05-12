@@ -11,12 +11,9 @@ import static com.solodroidx.ads.util.Constant.FAN_BIDDING_ADMOB;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_AD_MANAGER;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_APPLOVIN_MAX;
 import static com.solodroidx.ads.util.Constant.GOOGLE_AD_MANAGER;
-import static com.solodroidx.ads.util.Constant.HUAWEI;
 import static com.solodroidx.ads.util.Constant.NONE;
-import static com.solodroidx.ads.util.Constant.PANGLE;
 import static com.solodroidx.ads.util.Constant.STARTAPP;
 import static com.solodroidx.ads.util.Constant.UNITY;
-import static com.solodroidx.ads.util.Constant.YANDEX;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -36,10 +33,6 @@ import com.applovin.sdk.AppLovinAd;
 import com.applovin.sdk.AppLovinAdLoadListener;
 import com.applovin.sdk.AppLovinAdSize;
 import com.applovin.sdk.AppLovinSdk;
-import com.bytedance.sdk.openadsdk.api.interstitial.PAGInterstitialAd;
-import com.bytedance.sdk.openadsdk.api.interstitial.PAGInterstitialAdInteractionListener;
-import com.bytedance.sdk.openadsdk.api.interstitial.PAGInterstitialAdLoadListener;
-import com.bytedance.sdk.openadsdk.api.interstitial.PAGInterstitialRequest;
 import com.facebook.ads.InterstitialAdListener;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
@@ -48,9 +41,6 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.admanager.AdManagerInterstitialAd;
 import com.google.android.gms.ads.admanager.AdManagerInterstitialAdLoadCallback;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
-import com.huawei.hms.ads.AdListener;
-import com.huawei.hms.ads.AdParam;
-import com.huawei.hms.ads.BiddingParam;
 import com.solodroidx.ads.helper.AppLovinCustomEventInterstitial;
 import com.solodroidx.ads.listener.OnInterstitialAdDismissedListener;
 import com.solodroidx.ads.util.Tools;
@@ -62,12 +52,6 @@ import com.unity3d.ads.IUnityAdsLoadListener;
 import com.unity3d.ads.IUnityAdsShowListener;
 import com.unity3d.ads.UnityAds;
 import com.unity3d.ads.UnityAdsShowOptions;
-import com.yandex.mobile.ads.common.AdRequestConfiguration;
-import com.yandex.mobile.ads.common.AdRequestError;
-import com.yandex.mobile.ads.common.ImpressionData;
-import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener;
-import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener;
-import com.yandex.mobile.ads.interstitial.InterstitialAdLoader;
 
 import java.util.concurrent.TimeUnit;
 
@@ -84,10 +68,6 @@ public class InterstitialAd {
     private MaxInterstitialAd maxInterstitialAd;
     public AppLovinInterstitialAdDialog appLovinInterstitialAdDialog;
     public AppLovinAd appLovinAd;
-    private PAGInterstitialAd pangleInterstitialAd;
-    private com.huawei.hms.ads.InterstitialAd huaweiInterstitialAd;
-    private com.yandex.mobile.ads.interstitial.InterstitialAd yandexInterstitialAd;
-    private InterstitialAdLoader yandexInterstitialAdLoader;
     private int retryAttempt;
     private int counter = 1;
 
@@ -460,113 +440,6 @@ public class InterstitialAd {
                     appLovinInterstitialAdDialog = AppLovinInterstitialAd.create(AppLovinSdk.getInstance(activity), activity);
                     break;
 
-                case PANGLE:
-                    PAGInterstitialAd.loadAd(pangleInterstitialId, new PAGInterstitialRequest(), new PAGInterstitialAdLoadListener() {
-                        @Override
-                        public void onAdLoaded(PAGInterstitialAd interstitialAd) {
-                            pangleInterstitialAd = interstitialAd;
-                            pangleInterstitialAd.setAdInteractionListener(new PAGInterstitialAdInteractionListener() {
-                                @Override
-                                public void onAdShowed() {
-
-                                }
-
-                                @Override
-                                public void onAdClicked() {
-
-                                }
-
-                                @Override
-                                public void onAdDismissed() {
-                                    loadInterstitialAd();
-                                    if (withListener) {
-                                        onInterstitialAdDismissedListener.onInterstitialAdDismissed();
-                                    }
-                                    Log.d(TAG, "[" + adNetwork + "] " + "Interstitial Ad Dismissed");
-                                }
-                            });
-                            Log.d(TAG, "[" + adNetwork + "] " + "Interstitial Ad Loaded");
-                        }
-
-                        @Override
-                        public void onError(int code, String message) {
-                            loadBackupInterstitialAd();
-                            pangleInterstitialAd = null;
-                            Log.d(TAG, "[" + adNetwork + "] " + "Failed: " + code + " : " + message);
-                        }
-                    });
-                    break;
-
-                case HUAWEI:
-                    huaweiInterstitialAd = new com.huawei.hms.ads.InterstitialAd(activity);
-                    huaweiInterstitialAd.setAdId(huaweiInterstitialId);
-                    AdParam.Builder AdParamBuilder = new AdParam.Builder();
-                    BiddingParam biddingParam = new BiddingParam();
-                    AdParamBuilder.addBiddingParamMap(huaweiInterstitialId, biddingParam);
-                    AdParamBuilder.setTMax(500);
-                    huaweiInterstitialAd.loadAd(AdParamBuilder.build());
-                    huaweiInterstitialAd.setAdListener(new AdListener() {
-                        @Override
-                        public void onAdLoaded() {
-                            // Called when an ad is loaded successfully.
-                            Log.d(TAG, "Huawei Interstitial Ad Loaded");
-                        }
-
-                        @Override
-                        public void onAdFailed(int errorCode) {
-                            // Called when an ad fails to be loaded.
-                            huaweiInterstitialAd = null;
-                            loadBackupInterstitialAd();
-                            Log.d(TAG, "Failed to Load Huawei Interstitial");
-                        }
-
-                        @Override
-                        public void onAdClosed() {
-                            // Called when an ad is closed.
-                            loadInterstitialAd();
-                            if (withListener) {
-                                onInterstitialAdDismissedListener.onInterstitialAdDismissed();
-                            }
-                            Log.d(TAG, "Huawei Interstitial Ad Closed");
-                        }
-
-                        @Override
-                        public void onAdClicked() {
-                            // Called when an ad is clicked.
-                        }
-
-                        @Override
-                        public void onAdLeave() {
-                            // Called when an ad leaves an app.
-                        }
-
-                        @Override
-                        public void onAdOpened() {
-                            // Called when an ad is opened.
-                        }
-                    });
-                    break;
-
-                case YANDEX:
-                    yandexInterstitialAdLoader = new InterstitialAdLoader(activity);
-                    yandexInterstitialAdLoader.setAdLoadListener(new InterstitialAdLoadListener() {
-                        @Override
-                        public void onAdLoaded(@NonNull com.yandex.mobile.ads.interstitial.InterstitialAd interstitialAd) {
-                            yandexInterstitialAd = interstitialAd;
-                            Log.d(TAG, "Yandex Interstitial Ad Loaded");
-                        }
-
-                        @Override
-                        public void onAdFailedToLoad(@NonNull final AdRequestError adRequestError) {
-                            Log.d(TAG, "Failed to Load Yandex Interstitial: " + adRequestError);
-                            yandexInterstitialAd = null;
-                            loadBackupInterstitialAd();
-                        }
-                    });
-                    AdRequestConfiguration adRequestConfiguration = new AdRequestConfiguration.Builder(yandexInterstitialId).build();
-                    yandexInterstitialAdLoader.loadAd(adRequestConfiguration);
-                    break;
-
                 default:
                     break;
             }
@@ -800,110 +673,6 @@ public class InterstitialAd {
                     appLovinInterstitialAdDialog = AppLovinInterstitialAd.create(AppLovinSdk.getInstance(activity), activity);
                     break;
 
-                case PANGLE:
-                    PAGInterstitialAd.loadAd(pangleInterstitialId, new PAGInterstitialRequest(), new PAGInterstitialAdLoadListener() {
-                        @Override
-                        public void onAdLoaded(PAGInterstitialAd interstitialAd) {
-                            pangleInterstitialAd = interstitialAd;
-                            pangleInterstitialAd.setAdInteractionListener(new PAGInterstitialAdInteractionListener() {
-                                @Override
-                                public void onAdShowed() {
-
-                                }
-
-                                @Override
-                                public void onAdClicked() {
-
-                                }
-
-                                @Override
-                                public void onAdDismissed() {
-                                    loadInterstitialAd();
-                                    if (withListener) {
-                                        onInterstitialAdDismissedListener.onInterstitialAdDismissed();
-                                    }
-                                    Log.d(TAG, "[" + backupAdNetwork + "] [backup] " + "Interstitial Ad Dismissed");
-                                }
-                            });
-                            Log.d(TAG, "[" + backupAdNetwork + "] [backup] " + "Interstitial Ad Loaded");
-                        }
-
-                        @Override
-                        public void onError(int code, String message) {
-                            pangleInterstitialAd = null;
-                            Log.d(TAG, "[" + backupAdNetwork + "] [backup] " + "Failed: " + code + " : " + message);
-                        }
-                    });
-                    break;
-
-                case HUAWEI:
-                    huaweiInterstitialAd = new com.huawei.hms.ads.InterstitialAd(activity);
-                    huaweiInterstitialAd.setAdId(huaweiInterstitialId);
-                    AdParam.Builder AdParamBuilder = new AdParam.Builder();
-                    BiddingParam biddingParam = new BiddingParam();
-                    AdParamBuilder.addBiddingParamMap(huaweiInterstitialId, biddingParam);
-                    AdParamBuilder.setTMax(500);
-                    huaweiInterstitialAd.loadAd(AdParamBuilder.build());
-                    huaweiInterstitialAd.setAdListener(new AdListener() {
-                        @Override
-                        public void onAdLoaded() {
-                            // Called when an ad is loaded successfully.
-                            Log.d(TAG, "Huawei Interstitial Ad Loaded");
-                        }
-
-                        @Override
-                        public void onAdFailed(int errorCode) {
-                            // Called when an ad fails to be loaded.
-                            huaweiInterstitialAd = null;
-                            Log.d(TAG, "Failed to Load Huawei Interstitial");
-                        }
-
-                        @Override
-                        public void onAdClosed() {
-                            // Called when an ad is closed.
-                            loadInterstitialAd();
-                            if (withListener) {
-                                onInterstitialAdDismissedListener.onInterstitialAdDismissed();
-                            }
-                            Log.d(TAG, "Huawei Interstitial Ad Closed");
-                        }
-
-                        @Override
-                        public void onAdClicked() {
-                            // Called when an ad is clicked.
-                        }
-
-                        @Override
-                        public void onAdLeave() {
-                            // Called when an ad leaves an app.
-                        }
-
-                        @Override
-                        public void onAdOpened() {
-                            // Called when an ad is opened.
-                        }
-                    });
-                    break;
-
-                case YANDEX:
-                    yandexInterstitialAdLoader = new InterstitialAdLoader(activity);
-                    yandexInterstitialAdLoader.setAdLoadListener(new InterstitialAdLoadListener() {
-                        @Override
-                        public void onAdLoaded(@NonNull com.yandex.mobile.ads.interstitial.InterstitialAd interstitialAd) {
-                            yandexInterstitialAd = interstitialAd;
-                            Log.d(TAG, "[backup] Yandex Interstitial Ad Loaded");
-                        }
-
-                        @Override
-                        public void onAdFailedToLoad(@NonNull final AdRequestError adRequestError) {
-                            Log.d(TAG, "[backup] Failed to Load Yandex Interstitial: " + adRequestError);
-                            yandexInterstitialAd = null;
-                        }
-                    });
-                    AdRequestConfiguration adRequestConfiguration = new AdRequestConfiguration.Builder(yandexInterstitialId).build();
-                    yandexInterstitialAdLoader.loadAd(adRequestConfiguration);
-                    break;
-
                 case NONE:
                     //do nothing
                     break;
@@ -1023,71 +792,6 @@ public class InterstitialAd {
                     case APPLOVIN_DISCOVERY:
                         if (appLovinInterstitialAdDialog != null) {
                             appLovinInterstitialAdDialog.showAndRender(appLovinAd);
-                        }
-                        break;
-
-                    case PANGLE:
-                        if (pangleInterstitialAd != null) {
-                            pangleInterstitialAd.show(activity);
-                            Log.d(TAG, "Show Pangle Interstitial Ad");
-                        } else {
-                            showBackupInterstitialAd();
-                            Log.d(TAG, "Pangle Interstitial Null");
-                        }
-                        break;
-
-                    case HUAWEI:
-                        if (huaweiInterstitialAd != null) {
-                            if (huaweiInterstitialAd.isLoaded()) {
-                                huaweiInterstitialAd.show(activity);
-                                Log.d(TAG, "Huawei Interstitial show");
-                            } else {
-                                showBackupInterstitialAd();
-                                Log.d(TAG, "Huawei Interstitial is not loaded");
-                            }
-                        } else {
-                            showBackupInterstitialAd();
-                            Log.d(TAG, "Huawei Interstitial is null");
-                        }
-                        break;
-
-                    case YANDEX:
-                        if (yandexInterstitialAd != null) {
-                            yandexInterstitialAd.setAdEventListener(new InterstitialAdEventListener() {
-                                @Override
-                                public void onAdShown() {
-                                }
-
-                                @Override
-                                public void onAdFailedToShow(@NonNull final com.yandex.mobile.ads.common.AdError adError) {
-                                    showBackupInterstitialAd();
-                                }
-
-                                @Override
-                                public void onAdDismissed() {
-                                    if (yandexInterstitialAd != null) {
-                                        yandexInterstitialAd.setAdEventListener(null);
-                                        yandexInterstitialAd = null;
-                                    }
-                                    if (withListener) {
-                                        onInterstitialAdDismissedListener.onInterstitialAdDismissed();
-                                    }
-                                    // Now you can preload the next interstitial ad.
-                                    loadInterstitialAd();
-                                }
-
-                                @Override
-                                public void onAdClicked() {
-                                }
-
-                                @Override
-                                public void onAdImpression(@Nullable final ImpressionData impressionData) {
-                                }
-                            });
-                            yandexInterstitialAd.show(activity);
-                        } else {
-                            showBackupInterstitialAd();
-                            Log.d(TAG, "Huawei Interstitial is null");
                         }
                         break;
 
@@ -1221,70 +925,6 @@ public class InterstitialAd {
                 case APPLOVIN_DISCOVERY:
                     if (appLovinInterstitialAdDialog != null) {
                         appLovinInterstitialAdDialog.showAndRender(appLovinAd);
-                    } else {
-                        if (withListener) {
-                            onInterstitialAdDismissedListener.onInterstitialAdDismissed();
-                        }
-                    }
-                    break;
-
-                case PANGLE:
-                    if (pangleInterstitialAd != null) {
-                        pangleInterstitialAd.show(activity);
-                    } else {
-                        if (withListener) {
-                            onInterstitialAdDismissedListener.onInterstitialAdDismissed();
-                        }
-                    }
-                    break;
-
-                case HUAWEI:
-                    if (huaweiInterstitialAd != null) {
-                        if (huaweiInterstitialAd.isLoaded()) {
-                            huaweiInterstitialAd.show(activity);
-                        }
-                    } else {
-                        if (withListener) {
-                            onInterstitialAdDismissedListener.onInterstitialAdDismissed();
-                        }
-                    }
-                    break;
-
-                case YANDEX:
-                    if (yandexInterstitialAd != null) {
-                        yandexInterstitialAd.setAdEventListener(new InterstitialAdEventListener() {
-                            @Override
-                            public void onAdShown() {
-                            }
-
-                            @Override
-                            public void onAdFailedToShow(@NonNull final com.yandex.mobile.ads.common.AdError adError) {
-                                if (withListener) {
-                                    onInterstitialAdDismissedListener.onInterstitialAdDismissed();
-                                }
-                            }
-
-                            @Override
-                            public void onAdDismissed() {
-                                if (yandexInterstitialAd != null) {
-                                    yandexInterstitialAd.setAdEventListener(null);
-                                    yandexInterstitialAd = null;
-                                }
-                                if (withListener) {
-                                    onInterstitialAdDismissedListener.onInterstitialAdDismissed();
-                                }
-                                loadInterstitialAd();
-                            }
-
-                            @Override
-                            public void onAdClicked() {
-                            }
-
-                            @Override
-                            public void onAdImpression(@Nullable final ImpressionData impressionData) {
-                            }
-                        });
-                        yandexInterstitialAd.show(activity);
                     } else {
                         if (withListener) {
                             onInterstitialAdDismissedListener.onInterstitialAdDismissed();

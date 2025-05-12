@@ -6,7 +6,7 @@ android {
     namespace 'com.solodroidx.ads'
     compileSdk 34
     defaultConfig {
-        minSdk 21
+        minSdk 23
         targetSdk 34
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -26,17 +26,17 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
 
     //Primary Ad Networks
-    implementation 'com.google.android.gms:play-services-ads:23.6.0'
-    implementation 'com.applovin:applovin-sdk:13.0.1'
+    implementation 'com.google.android.gms:play-services-ads:24.2.0'
+    implementation 'com.applovin:applovin-sdk:13.2.0'
 
     //AdMob mediation
-    implementation 'com.google.ads.mediation:applovin:13.0.1.0'
+    implementation 'com.google.ads.mediation:applovin:13.2.0.1'
 
     //Applovin mediation
-    implementation 'com.applovin.mediation:google-ad-manager-adapter:23.6.0.1'
-    implementation 'com.applovin.mediation:google-adapter:23.6.0.1'
+    implementation 'com.applovin.mediation:google-ad-manager-adapter:23.6.0.3'
+    implementation 'com.applovin.mediation:google-adapter:23.6.0.3'
 
     //GDPR
-    implementation 'com.google.android.ump:user-messaging-platform:3.1.0'
+    implementation 'com.google.android.ump:user-messaging-platform:3.2.0'
 
 }

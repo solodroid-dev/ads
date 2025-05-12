@@ -39,11 +39,6 @@ import com.applovin.sdk.AppLovinAdDisplayListener;
 import com.applovin.sdk.AppLovinAdLoadListener;
 import com.applovin.sdk.AppLovinAdSize;
 import com.applovin.sdk.AppLovinSdk;
-import com.bytedance.sdk.openadsdk.api.reward.PAGRewardItem;
-import com.bytedance.sdk.openadsdk.api.reward.PAGRewardedAd;
-import com.bytedance.sdk.openadsdk.api.reward.PAGRewardedAdInteractionListener;
-import com.bytedance.sdk.openadsdk.api.reward.PAGRewardedAdLoadListener;
-import com.bytedance.sdk.openadsdk.api.reward.PAGRewardedRequest;
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdError;
 import com.facebook.ads.RewardedVideoAdListener;
@@ -51,11 +46,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
-import com.huawei.hms.ads.AdParam;
-import com.huawei.hms.ads.BiddingParam;
-import com.huawei.hms.ads.reward.RewardAd;
-import com.huawei.hms.ads.reward.RewardAdLoadListener;
-import com.huawei.hms.ads.reward.RewardAdStatusListener;
 import com.ironsource.mediationsdk.IronSource;
 import com.ironsource.mediationsdk.adunit.adapter.utility.AdInfo;
 import com.ironsource.mediationsdk.logger.IronSourceError;
@@ -73,13 +63,6 @@ import com.unity3d.ads.IUnityAdsLoadListener;
 import com.unity3d.ads.IUnityAdsShowListener;
 import com.unity3d.ads.UnityAds;
 import com.unity3d.ads.UnityAdsShowOptions;
-import com.wortise.ads.rewarded.models.Reward;
-import com.yandex.mobile.ads.common.AdRequestConfiguration;
-import com.yandex.mobile.ads.common.AdRequestError;
-import com.yandex.mobile.ads.common.ImpressionData;
-import com.yandex.mobile.ads.rewarded.RewardedAdEventListener;
-import com.yandex.mobile.ads.rewarded.RewardedAdLoadListener;
-import com.yandex.mobile.ads.rewarded.RewardedAdLoader;
 
 @SuppressWarnings("deprecation")
 public class RewardedAd {
@@ -93,11 +76,6 @@ public class RewardedAd {
     private MaxRewardedAd applovinMaxRewardedAd;
     public AppLovinInterstitialAdDialog appLovinInterstitialAdDialog;
     public AppLovinAd appLovinAd;
-    private com.wortise.ads.rewarded.RewardedAd wortiseRewardedAd;
-    private PAGRewardedAd pangleRewardedAd;
-    private RewardAd huaweiRewardedAd;
-    private com.yandex.mobile.ads.rewarded.RewardedAd yandexRewardedAd;
-    private RewardedAdLoader yandexRewardedAdLoader;
     private String adStatus = "";
     private String mainAds = "";
     private String backupAds = "";
@@ -487,145 +465,6 @@ public class RewardedAd {
                         }
                     });
                     break;
-
-                case WORTISE:
-                    wortiseRewardedAd = new com.wortise.ads.rewarded.RewardedAd(activity, wortiseRewardedId);
-                    wortiseRewardedAd.setListener(new com.wortise.ads.rewarded.RewardedAd.Listener() {
-                        @Override
-                        public void onRewardedImpression(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
-
-                        }
-
-                        @Override
-                        public void onRewardedFailedToShow(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull com.wortise.ads.AdError adError) {
-
-                        }
-
-                        @Override
-                        public void onRewardedFailedToLoad(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull com.wortise.ads.AdError adError) {
-                            loadRewardedBackupAd(onComplete, onDismiss);
-                            Log.d(TAG, "[" + mainAds + "] " + "failed to load rewarded ad: " + adError + ", try to load backup ad: " + backupAds);
-                        }
-
-                        @Override
-                        public void onRewardedClicked(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
-
-                        }
-
-                        @Override
-                        public void onRewardedCompleted(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull Reward reward) {
-                            onComplete.onRewardedAdComplete();
-                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad complete");
-                        }
-
-                        @Override
-                        public void onRewardedDismissed(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
-                            loadRewardedAd(onComplete, onDismiss);
-                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad dismissed");
-                        }
-
-                        @Override
-                        public void onRewardedLoaded(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
-                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad loaded");
-                        }
-
-                        @Override
-                        public void onRewardedShown(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
-
-                        }
-                    });
-                    wortiseRewardedAd.loadAd();
-                    break;
-
-                case PANGLE:
-                    PAGRewardedAd.loadAd(pangleRewardedId, new PAGRewardedRequest(), new PAGRewardedAdLoadListener() {
-                        @Override
-                        public void onError(int code, String message) {
-                            pangleRewardedAd = null;
-                            loadRewardedBackupAd(onComplete, onDismiss);
-                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad error: " + code + " : " + message);
-                        }
-
-                        @Override
-                        public void onAdLoaded(PAGRewardedAd rewardedAd) {
-                            pangleRewardedAd = rewardedAd;
-                            pangleRewardedAd.setAdInteractionListener(new PAGRewardedAdInteractionListener() {
-                                @Override
-                                public void onAdShowed() {
-
-                                }
-
-                                @Override
-                                public void onAdClicked() {
-
-                                }
-
-                                @Override
-                                public void onAdDismissed() {
-                                    pangleRewardedAd = null;
-                                    loadRewardedAd(onComplete, onDismiss);
-                                    onDismiss.onRewardedAdDismissed();
-                                    Log.d(TAG, "[" + mainAds + "] " + "rewarded ad dismissed");
-                                }
-
-                                @Override
-                                public void onUserEarnedReward(PAGRewardItem item) {
-                                    onComplete.onRewardedAdComplete();
-                                    Log.d(TAG, "The user earned the reward.");
-                                }
-
-                                @Override
-                                public void onUserEarnedRewardFail(int errorCode, String errorMsg) {
-
-                                }
-                            });
-                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad loaded");
-                        }
-                    });
-                    break;
-
-                case HUAWEI:
-                    if (huaweiRewardedAd == null) {
-                        huaweiRewardedAd = new RewardAd(activity, huaweiRewardedId);
-                        AdParam.Builder adParamBuilder = new AdParam.Builder();
-                        BiddingParam biddingParam = new BiddingParam();
-                        adParamBuilder.addBiddingParamMap(huaweiRewardedId, biddingParam);
-                        adParamBuilder.setTMax(500);
-                        huaweiRewardedAd.loadAd(new AdParam.Builder().build(), new RewardAdLoadListener() {
-                            @Override
-                            public void onRewardedLoaded() {
-                                Log.d(TAG, "[" + mainAds + "] " + "rewarded ad loaded");
-                            }
-
-                            @Override
-                            public void onRewardAdFailedToLoad(int errorCode) {
-                                huaweiRewardedAd = null;
-                                loadRewardedBackupAd(onComplete, onDismiss);
-                                Log.d(TAG, "[" + mainAds + "] " + "failed to load rewarded ad: " + errorCode + ", try to load backup ad: " + backupAds);
-                            }
-                        });
-                    }
-                    break;
-
-                case YANDEX:
-                    yandexRewardedAdLoader = new RewardedAdLoader(activity);
-                    yandexRewardedAdLoader.setAdLoadListener(new RewardedAdLoadListener() {
-                        @Override
-                        public void onAdLoaded(@NonNull final com.yandex.mobile.ads.rewarded.RewardedAd rewardedAd) {
-                            yandexRewardedAd = rewardedAd;
-                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad loaded");
-                        }
-
-                        @Override
-                        public void onAdFailedToLoad(@NonNull final AdRequestError adRequestError) {
-                            yandexRewardedAd = null;
-                            loadRewardedBackupAd(onComplete, onDismiss);
-                            Log.d(TAG, "[" + mainAds + "] " + "failed to load rewarded ad: " + adRequestError + ", try to load backup ad: " + backupAds);
-                        }
-                    });
-                    AdRequestConfiguration adRequestConfiguration = new AdRequestConfiguration.Builder(yandexRewardedId).build();
-                    yandexRewardedAdLoader.loadAd(adRequestConfiguration);
-                    break;
             }
         }
     }
@@ -892,141 +731,6 @@ public class RewardedAd {
                         }
                     });
                     break;
-
-                case WORTISE:
-                    wortiseRewardedAd = new com.wortise.ads.rewarded.RewardedAd(activity, wortiseRewardedId);
-                    wortiseRewardedAd.setListener(new com.wortise.ads.rewarded.RewardedAd.Listener() {
-                        @Override
-                        public void onRewardedImpression(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
-
-                        }
-
-                        @Override
-                        public void onRewardedFailedToShow(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull com.wortise.ads.AdError adError) {
-
-                        }
-
-                        @Override
-                        public void onRewardedFailedToLoad(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull com.wortise.ads.AdError adError) {
-                            Log.d(TAG, "[" + backupAds + "] [backup] " + "failed to load rewarded ad: " + adError + ", try to load backup ad: " + backupAds);
-                        }
-
-                        @Override
-                        public void onRewardedClicked(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
-
-                        }
-
-                        @Override
-                        public void onRewardedCompleted(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull Reward reward) {
-                            onComplete.onRewardedAdComplete();
-                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad complete");
-                        }
-
-                        @Override
-                        public void onRewardedDismissed(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
-                            loadRewardedAd(onComplete, onDismiss);
-                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad dismissed");
-                        }
-
-                        @Override
-                        public void onRewardedLoaded(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
-                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad loaded");
-                        }
-
-                        @Override
-                        public void onRewardedShown(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
-
-                        }
-                    });
-                    wortiseRewardedAd.loadAd();
-                    break;
-
-                case PANGLE:
-                    PAGRewardedAd.loadAd(pangleRewardedId, new PAGRewardedRequest(), new PAGRewardedAdLoadListener() {
-                        @Override
-                        public void onError(int code, String message) {
-                            pangleRewardedAd = null;
-                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad error: " + code + " : " + message);
-                        }
-
-                        @Override
-                        public void onAdLoaded(PAGRewardedAd rewardedAd) {
-                            pangleRewardedAd = rewardedAd;
-                            pangleRewardedAd.setAdInteractionListener(new PAGRewardedAdInteractionListener() {
-                                @Override
-                                public void onAdShowed() {
-
-                                }
-
-                                @Override
-                                public void onAdClicked() {
-
-                                }
-
-                                @Override
-                                public void onAdDismissed() {
-                                    pangleRewardedAd = null;
-                                    loadRewardedAd(onComplete, onDismiss);
-                                    onDismiss.onRewardedAdDismissed();
-                                    Log.d(TAG, "[" + backupAds + "] [backup] " + "reward ad dismissed");
-                                }
-
-                                @Override
-                                public void onUserEarnedReward(PAGRewardItem item) {
-                                    onComplete.onRewardedAdComplete();
-                                    Log.d(TAG, "[" + backupAds + "] [backup] " + "The user earned the reward.");
-                                }
-
-                                @Override
-                                public void onUserEarnedRewardFail(int errorCode, String errorMsg) {
-
-                                }
-                            });
-                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad loaded");
-                        }
-                    });
-                    break;
-
-                case HUAWEI:
-                    if (huaweiRewardedAd == null) {
-                        huaweiRewardedAd = new RewardAd(activity, huaweiRewardedId);
-                        AdParam.Builder adParamBuilder = new AdParam.Builder();
-                        BiddingParam biddingParam = new BiddingParam();
-                        adParamBuilder.addBiddingParamMap(huaweiRewardedId, biddingParam);
-                        adParamBuilder.setTMax(500);
-                        huaweiRewardedAd.loadAd(new AdParam.Builder().build(), new RewardAdLoadListener() {
-                            @Override
-                            public void onRewardedLoaded() {
-                                Log.d(TAG, "[" + backupAds + "] " + "rewarded ad loaded");
-                            }
-
-                            @Override
-                            public void onRewardAdFailedToLoad(int errorCode) {
-                                huaweiRewardedAd = null;
-                                Log.d(TAG, "[" + backupAds + "] " + "failed to load rewarded ad: " + errorCode + ", try to load backup ad: " + backupAds);
-                            }
-                        });
-                    }
-                    break;
-
-                case YANDEX:
-                    yandexRewardedAdLoader = new RewardedAdLoader(activity);
-                    yandexRewardedAdLoader.setAdLoadListener(new RewardedAdLoadListener() {
-                        @Override
-                        public void onAdLoaded(@NonNull final com.yandex.mobile.ads.rewarded.RewardedAd rewardedAd) {
-                            yandexRewardedAd = rewardedAd;
-                            Log.d(TAG, "[" + backupAds + "] " + "rewarded ad loaded");
-                        }
-
-                        @Override
-                        public void onAdFailedToLoad(@NonNull final AdRequestError adRequestError) {
-                            yandexRewardedAd = null;
-                            Log.d(TAG, "[" + backupAds + "] " + "failed to load rewarded ad: " + adRequestError + ", try to load backup ad: " + backupAds);
-                        }
-                    });
-                    AdRequestConfiguration adRequestConfiguration = new AdRequestConfiguration.Builder(yandexRewardedId).build();
-                    yandexRewardedAdLoader.loadAd(adRequestConfiguration);
-                    break;
             }
         }
     }
@@ -1143,105 +847,6 @@ public class RewardedAd {
                 case FAN_BIDDING_IRONSOURCE:
                     if (IronSource.isRewardedVideoAvailable()) {
                         IronSource.showRewardedVideo(ironSourceRewardedId);
-                    } else {
-                        showRewardedBackupAd(onComplete, onDismiss, onError);
-                    }
-                    break;
-
-                case WORTISE:
-                    if (wortiseRewardedAd != null && wortiseRewardedAd.isAvailable()) {
-                        wortiseRewardedAd.showAd();
-                    } else {
-                        showRewardedBackupAd(onComplete, onDismiss, onError);
-                    }
-                    break;
-
-                case PANGLE:
-                    if (pangleRewardedAd != null) {
-                        pangleRewardedAd.show(activity);
-                    } else {
-                        showRewardedBackupAd(onComplete, onDismiss, onError);
-                    }
-                    break;
-
-                case HUAWEI:
-                    if (huaweiRewardedAd != null) {
-                        if (huaweiRewardedAd.isLoaded()) {
-                            huaweiRewardedAd.show(activity, new RewardAdStatusListener() {
-                                @Override
-                                public void onRewardAdOpened() {
-                                    // Rewarded ad opened.
-                                }
-
-                                @Override
-                                public void onRewardAdFailedToShow(int errorCode) {
-                                    // Failed to display the rewarded ad.
-                                    huaweiRewardedAd = null;
-                                }
-
-                                @Override
-                                public void onRewardAdClosed() {
-                                    // Rewarded ad closed.
-                                    huaweiRewardedAd = null;
-                                    loadRewardedAd(onComplete, onDismiss);
-                                    onDismiss.onRewardedAdDismissed();
-                                }
-
-                                @Override
-                                public void onRewarded(com.huawei.hms.ads.reward.Reward reward) {
-                                    onComplete.onRewardedAdComplete();
-                                    Log.d(TAG, "The user earned the reward.");
-                                    // Provide a reward when reward conditions are met.
-                                }
-                            });
-                        } else {
-                            showRewardedBackupAd(onComplete, onDismiss, onError);
-                        }
-                    } else {
-                        showRewardedBackupAd(onComplete, onDismiss, onError);
-                    }
-                    break;
-
-                case YANDEX:
-                    if (yandexRewardedAd != null) {
-                        yandexRewardedAd.setAdEventListener(new RewardedAdEventListener() {
-                            @Override
-                            public void onAdShown() {
-
-                            }
-
-                            @Override
-                            public void onAdFailedToShow(@NonNull final com.yandex.mobile.ads.common.AdError adError) {
-                                yandexRewardedAd = null;
-                            }
-
-                            @Override
-                            public void onAdDismissed() {
-                                if (yandexRewardedAd != null) {
-                                    yandexRewardedAd.setAdEventListener(null);
-                                    yandexRewardedAd = null;
-                                }
-                                loadRewardedAd(onComplete, onDismiss);
-                                onDismiss.onRewardedAdDismissed();
-                            }
-
-                            @Override
-                            public void onAdClicked() {
-
-                            }
-
-                            @Override
-                            public void onAdImpression(@Nullable final ImpressionData impressionData) {
-
-                            }
-
-                            @Override
-                            public void onRewarded(@NonNull final com.yandex.mobile.ads.rewarded.Reward reward) {
-                                onComplete.onRewardedAdComplete();
-                                Log.d(TAG, "The user earned the reward.");
-                            }
-                        });
-                        yandexRewardedAd.show(activity);
                     } else {
                         showRewardedBackupAd(onComplete, onDismiss, onError);
                     }
@@ -1372,105 +977,6 @@ public class RewardedAd {
                     }
                     break;
 
-                case WORTISE:
-                    if (wortiseRewardedAd != null && wortiseRewardedAd.isAvailable()) {
-                        wortiseRewardedAd.showAd();
-                    } else {
-                        onError.onRewardedAdError();
-                    }
-                    break;
-
-                case PANGLE:
-                    if (pangleRewardedAd != null) {
-                        pangleRewardedAd.show(activity);
-                    } else {
-                        onError.onRewardedAdError();
-                    }
-                    break;
-
-                case HUAWEI:
-                    if (huaweiRewardedAd != null) {
-                        if (huaweiRewardedAd.isLoaded()) {
-                            huaweiRewardedAd.show(activity, new RewardAdStatusListener() {
-                                @Override
-                                public void onRewardAdOpened() {
-                                    // Rewarded ad opened.
-                                }
-
-                                @Override
-                                public void onRewardAdFailedToShow(int errorCode) {
-                                    // Failed to display the rewarded ad.
-                                    huaweiRewardedAd = null;
-                                }
-
-                                @Override
-                                public void onRewardAdClosed() {
-                                    // Rewarded ad closed.
-                                    huaweiRewardedAd = null;
-                                    loadRewardedAd(onComplete, onDismiss);
-                                    onDismiss.onRewardedAdDismissed();
-                                }
-
-                                @Override
-                                public void onRewarded(com.huawei.hms.ads.reward.Reward reward) {
-                                    onComplete.onRewardedAdComplete();
-                                    Log.d(TAG, "The user earned the reward.");
-                                    // Provide a reward when reward conditions are met.
-                                }
-                            });
-                        } else {
-                            onError.onRewardedAdError();
-                        }
-                    } else {
-                        onError.onRewardedAdError();
-                    }
-                    break;
-
-                case YANDEX:
-                    if (yandexRewardedAd != null) {
-                        yandexRewardedAd.setAdEventListener(new RewardedAdEventListener() {
-                            @Override
-                            public void onAdShown() {
-
-                            }
-
-                            @Override
-                            public void onAdFailedToShow(@NonNull final com.yandex.mobile.ads.common.AdError adError) {
-                                yandexRewardedAd = null;
-                            }
-
-                            @Override
-                            public void onAdDismissed() {
-                                if (yandexRewardedAd != null) {
-                                    yandexRewardedAd.setAdEventListener(null);
-                                    yandexRewardedAd = null;
-                                }
-                                loadRewardedAd(onComplete, onDismiss);
-                                onDismiss.onRewardedAdDismissed();
-                            }
-
-                            @Override
-                            public void onAdClicked() {
-
-                            }
-
-                            @Override
-                            public void onAdImpression(@Nullable final ImpressionData impressionData) {
-
-                            }
-
-                            @Override
-                            public void onRewarded(@NonNull final com.yandex.mobile.ads.rewarded.Reward reward) {
-                                onComplete.onRewardedAdComplete();
-                                Log.d(TAG, "The user earned the reward.");
-                            }
-                        });
-                        yandexRewardedAd.show(activity);
-                    } else {
-                        onError.onRewardedAdError();
-                    }
-                    break;
-
                 default:
                     onError.onRewardedAdError();
                     break;
@@ -1489,17 +995,6 @@ public class RewardedAd {
                         fanRewardedVideoAd = null;
                     }
                     break;
-
-                case YANDEX:
-                    if (yandexRewardedAdLoader != null) {
-                        yandexRewardedAdLoader.setAdLoadListener(null);
-                        yandexRewardedAdLoader = null;
-                    }
-                    if (yandexRewardedAd != null) {
-                        yandexRewardedAd.setAdEventListener(null);
-                        yandexRewardedAd = null;
-                    }
-                    break;
             }
 
             switch (backupAds) {
@@ -1508,17 +1003,6 @@ public class RewardedAd {
                     if (fanRewardedVideoAd != null) {
                         fanRewardedVideoAd.destroy();
                         fanRewardedVideoAd = null;
-                    }
-                    break;
-
-                case YANDEX:
-                    if (yandexRewardedAdLoader != null) {
-                        yandexRewardedAdLoader.setAdLoadListener(null);
-                        yandexRewardedAdLoader = null;
-                    }
-                    if (yandexRewardedAd != null) {
-                        yandexRewardedAd.setAdEventListener(null);
-                        yandexRewardedAd = null;
                     }
                     break;
             }

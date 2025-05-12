@@ -6,7 +6,7 @@ android {
     namespace 'com.solodroidx.ads'
     compileSdk 34
     defaultConfig {
-        minSdk 21
+        minSdk 23
         targetSdk 34
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -27,11 +27,11 @@ dependencies {
     implementation 'com.google.android.gms:play-services-ads-identifier:18.2.0'
 
     //Primary Ad Networks
-    implementation 'com.google.android.gms:play-services-ads:23.6.0'
-    implementation 'com.pangle.global:ads-sdk:6.3.0.4'
+    implementation 'com.google.android.gms:play-services-ads:24.2.0'
+    implementation 'com.pangle.global:ads-sdk:6.5.0.9'
 
     //GDPR
-    implementation 'com.google.android.ump:user-messaging-platform:3.1.0'
+    implementation 'com.google.android.ump:user-messaging-platform:3.2.0'
 
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.16.0'

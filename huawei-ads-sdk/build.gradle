@@ -6,7 +6,7 @@ android {
     namespace 'com.solodroidx.ads'
     compileSdk 34
     defaultConfig {
-        minSdk 21
+        minSdk 23
         targetSdk 34
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -26,11 +26,11 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
 
     //Primary Ad Networks
-    implementation 'com.google.android.gms:play-services-ads:23.6.0'
-    implementation 'com.huawei.hms:ads-prime:3.4.76.300'
-    implementation 'com.huawei.hms:ads-consent:3.4.76.300'
+    implementation 'com.google.android.gms:play-services-ads:24.2.0'
+    implementation 'com.huawei.hms:ads-prime:3.4.78.301'
+    implementation 'com.huawei.hms:ads-consent:3.4.78.301'
 
     //GDPR
-    implementation 'com.google.android.ump:user-messaging-platform:3.1.0'
+    implementation 'com.google.android.ump:user-messaging-platform:3.2.0'
 
 }

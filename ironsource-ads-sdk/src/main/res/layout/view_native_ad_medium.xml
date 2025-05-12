@@ -72,6 +72,12 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
 
+            <FrameLayout
+                android:id="@+id/ironsource_native_ad_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>

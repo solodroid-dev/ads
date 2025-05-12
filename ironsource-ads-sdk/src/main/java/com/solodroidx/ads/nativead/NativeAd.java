@@ -5,16 +5,19 @@ import static com.solodroidx.ads.util.Constant.AD_STATUS_ON;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_ADMOB;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_AD_MANAGER;
 import static com.solodroidx.ads.util.Constant.GOOGLE_AD_MANAGER;
+import static com.solodroidx.ads.util.Constant.IRONSOURCE;
 
 import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.ads.AdListener;
@@ -22,6 +25,10 @@ import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.nativead.MediaView;
 import com.google.android.material.card.MaterialCardView;
+import com.ironsource.mediationsdk.ads.nativead.LevelPlayNativeAd;
+import com.ironsource.mediationsdk.ads.nativead.LevelPlayNativeAdListener;
+import com.ironsource.mediationsdk.adunit.adapter.utility.AdInfo;
+import com.ironsource.mediationsdk.logger.IronSourceError;
 import com.solodroidx.ads.R;
 import com.solodroidx.ads.util.AdManagerTemplateView;
 import com.solodroidx.ads.util.NativeTemplateStyle;
@@ -43,6 +50,8 @@ public class NativeAd {
     AdManagerTemplateView adManagerNativeAd;
     LinearLayout adManagerNativeBackground;
 
+//    FrameLayout ironsourceNativeAdContainer;
+
     private String adStatus = "";
     private String adNetwork = "";
     private String backupAdNetwork = "";
@@ -56,6 +65,7 @@ public class NativeAd {
     private String pangleNativeId = "";
     private String huaweiNativeId = "";
     private String yandexNativeId = "";
+    private String ironSourceNativeId = "";
     private int placementStatus = 1;
     private boolean darkTheme = false;
     private boolean legacyGDPR = false;
@@ -169,6 +179,11 @@ public class NativeAd {
         return this;
     }
 
+    public NativeAd setIronSourceNativeId(String ironSourceNativeId) {
+        this.ironSourceNativeId = ironSourceNativeId;
+        return this;
+    }
+
     public NativeAd setPlacementStatus(int placementStatus) {
         this.placementStatus = placementStatus;
         return this;
@@ -208,6 +223,8 @@ public class NativeAd {
             adManagerNativeAd = activity.findViewById(R.id.google_ad_manager_native_ad_container);
             adManagerMediaView = activity.findViewById(R.id.ad_manager_media_view);
             adManagerNativeBackground = activity.findViewById(R.id.ad_manager_background);
+
+//            ironsourceNativeAdContainer = activity.findViewById(R.id.ironsource_native_ad_container);
 
             switch (adNetwork) {
                 case ADMOB:
@@ -277,6 +294,39 @@ public class NativeAd {
                         Log.d(TAG, "Ad Manager Native Ad has been loaded");
                     }
                     break;
+
+//                case IRONSOURCE:
+//                    if (ironsourceNativeAdContainer.getVisibility() != View.VISIBLE) {
+//                        LevelPlayNativeAd nativeAd = new LevelPlayNativeAd.Builder()
+//                                .withPlacementName(ironSourceNativeId)
+//                                .withListener(new LevelPlayNativeAdListener() {
+//                                    @Override
+//                                    public void onAdLoaded(@Nullable LevelPlayNativeAd levelPlayNativeAd, @Nullable AdInfo adInfo) {
+//                                        Log.d(TAG, "ironSource Native Ad loaded");
+//                                    }
+//
+//                                    @Override
+//                                    public void onAdLoadFailed(@Nullable LevelPlayNativeAd levelPlayNativeAd, @Nullable IronSourceError ironSourceError) {
+//                                        Log.d(TAG, "Failed to load ironSource Native Ad: " + ironSourceError.getErrorCode() + " : " + ironSourceError.getErrorMessage());
+//                                    }
+//
+//                                    @Override
+//                                    public void onAdClicked(@Nullable LevelPlayNativeAd levelPlayNativeAd, @Nullable AdInfo adInfo) {
+//
+//                                    }
+//
+//                                    @Override
+//                                    public void onAdImpression(@Nullable LevelPlayNativeAd levelPlayNativeAd, @Nullable AdInfo adInfo) {
+//
+//                                    }
+//                                })
+//                                .build();
+//                    //mNativeAds.add(nativeAd);
+//                        nativeAd.loadAd();
+//                    } else {
+//                        Log.d(TAG, "ironSource Native Ad has been loaded");
+//                    }
+//                    break;
             }
 
         }

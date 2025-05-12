@@ -7,7 +7,7 @@ android {
     compileSdk 34
     defaultConfig {
         applicationId "com.solodroid.ads.sdkdemo"
-        minSdk 21
+        minSdk 23
         targetSdk 34
         versionCode 1
         versionName "1.0.0"
@@ -52,5 +52,5 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor")
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
-    implementation project(':admob-ads-sdk')
+    implementation project(':multi-ads-sdk-no-is')
 }

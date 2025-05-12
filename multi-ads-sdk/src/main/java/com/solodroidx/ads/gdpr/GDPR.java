@@ -12,8 +12,6 @@ import android.app.Activity;
 import android.util.Log;
 
 import com.applovin.sdk.AppLovinPrivacySettings;
-import com.bytedance.sdk.openadsdk.api.PAGConstant;
-import com.bytedance.sdk.openadsdk.api.init.PAGConfig;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.ump.ConsentDebugSettings;
 import com.google.android.ump.ConsentForm;
@@ -95,10 +93,6 @@ public class GDPR {
             case APPLOVIN_DISCOVERY:
                 //AppLovinPrivacySettings.setIsAgeRestrictedUser(childDirected, activity);
                 AppLovinPrivacySettings.setHasUserConsent(true, activity);
-                break;
-            case PANGLE:
-                PAGConfig.setGDPRConsent(PAGConstant.PAGGDPRConsentType.PAG_GDPR_CONSENT_TYPE_CONSENT);
-                PAGConfig.getGDPRConsent();
                 break;
         }
     }

@@ -11,12 +11,9 @@ import static com.solodroidx.ads.util.Constant.FAN_BIDDING_ADMOB;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_AD_MANAGER;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_APPLOVIN_MAX;
 import static com.solodroidx.ads.util.Constant.GOOGLE_AD_MANAGER;
-import static com.solodroidx.ads.util.Constant.HUAWEI;
 import static com.solodroidx.ads.util.Constant.NONE;
-import static com.solodroidx.ads.util.Constant.PANGLE;
 import static com.solodroidx.ads.util.Constant.STARTAPP;
 import static com.solodroidx.ads.util.Constant.UNITY;
-import static com.solodroidx.ads.util.Constant.YANDEX;
 
 import android.app.Activity;
 import android.util.Log;
@@ -24,11 +21,8 @@ import android.util.Log;
 import com.applovin.sdk.AppLovinMediationProvider;
 import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkInitializationConfiguration;
-import com.bytedance.sdk.openadsdk.api.init.PAGConfig;
-import com.bytedance.sdk.openadsdk.api.init.PAGSdk;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.AdapterStatus;
-import com.huawei.hms.ads.HwAds;
 import com.solodroidx.ads.helper.AudienceNetworkInitializeHelper;
 import com.startapp.sdk.adsbase.StartAppAd;
 import com.startapp.sdk.adsbase.StartAppSDK;
@@ -53,6 +47,7 @@ public class InitializeAd {
     private String ironSourceAppKey = "";
     private String wortiseAppId = "";
     private String pangleAppId = "";
+    private String appodealAppKey = "";
     private boolean debug = true;
 
     public InitializeAd(Activity activity) {
@@ -111,12 +106,20 @@ public class InitializeAd {
     }
 
     public InitializeAd setWortiseAppId(String wortiseAppId) {
-        this.wortiseAppId = wortiseAppId;
+        return this;
+    }
+
+    public InitializeAd setWortiseAppId(String wortiseAppId, String authorizationKey) {
         return this;
     }
 
     public InitializeAd setPangleAppId(String pangleAppId) {
         this.pangleAppId = pangleAppId;
+        return this;
+    }
+
+    public InitializeAd setAppodealAppKey(String appodealAppKey) {
+        this.appodealAppKey = appodealAppKey;
         return this;
     }
 
@@ -176,45 +179,13 @@ public class InitializeAd {
                             .setMediationProvider(AppLovinMediationProvider.MAX)
                             .build();
                     AppLovinSdk.getInstance(activity).initialize(initConfigAppLovinMax, sdkConfig -> {
-
                     });
                     AudienceNetworkInitializeHelper.initialize(activity);
                     break;
 
                 case APPLOVIN_DISCOVERY:
-                    AppLovinSdkInitializationConfiguration initConfigAppLovinDiscovery = AppLovinSdkInitializationConfiguration.builder(appLovinSdkKey, activity)
-                            .build();
+                    AppLovinSdkInitializationConfiguration initConfigAppLovinDiscovery = AppLovinSdkInitializationConfiguration.builder(appLovinSdkKey, activity).build();
                     AppLovinSdk.getInstance(activity).initialize(initConfigAppLovinDiscovery, sdkConfig -> {
-
-                    });
-                    break;
-
-                case PANGLE:
-                    PAGConfig pAGInitConfig = new PAGConfig.Builder()
-                            .appId(pangleAppId)
-                            .debugLog(true)
-                            .supportMultiProcess(false)
-                            .build();
-                    PAGSdk.init(activity, pAGInitConfig, new PAGSdk.PAGInitCallback() {
-                        @Override
-                        public void success() {
-                            Log.i(TAG, "pangle init success: " + pangleAppId + " : " + PAGSdk.isInitSuccess());
-                        }
-
-                        @Override
-                        public void fail(int code, String msg) {
-                            Log.i(TAG, "pangle init fail: " + code + " : " + msg);
-                        }
-                    });
-                    break;
-
-                case HUAWEI:
-                    HwAds.init(activity);
-                    break;
-
-                case YANDEX:
-                    com.yandex.mobile.ads.common.MobileAds.initialize(activity, () -> {
-                        Log.d(TAG, "[" + adNetwork + "] initialize complete");
                     });
                     break;
             }
@@ -269,44 +240,18 @@ public class InitializeAd {
                 case APPLOVIN:
                 case APPLOVIN_MAX:
                 case FAN_BIDDING_APPLOVIN_MAX:
-                    AppLovinSdk.getInstance(activity).setMediationProvider(AppLovinMediationProvider.MAX);
-                    AppLovinSdk.getInstance(activity).initializeSdk(config -> {
+                    AppLovinSdkInitializationConfiguration initConfigAppLovinMax = AppLovinSdkInitializationConfiguration.builder(appLovinSdkKey, activity)
+                            .setMediationProvider(AppLovinMediationProvider.MAX)
+                            .build();
+                    AppLovinSdk.getInstance(activity).initialize(initConfigAppLovinMax, sdkConfig -> {
                     });
                     AudienceNetworkInitializeHelper.initialize(activity);
                     break;
 
                 case APPLOVIN_DISCOVERY:
-                    AppLovinSdk.initializeSdk(activity);
-                    break;
-
-                case PANGLE:
-                    PAGConfig pAGInitConfig = new PAGConfig.Builder()
-                            .appId(pangleAppId)
-                            .debugLog(true)
-                            .supportMultiProcess(false)
-                            .build();
-                    PAGSdk.init(activity, pAGInitConfig, new PAGSdk.PAGInitCallback() {
-                        @Override
-                        public void success() {
-                            Log.i(TAG, "pangle init success: " + pangleAppId + " : " + PAGSdk.isInitSuccess());
-                        }
-
-                        @Override
-                        public void fail(int code, String msg) {
-                            Log.i(TAG, "pangle init fail: " + code + " : " + msg);
-                        }
+                    AppLovinSdkInitializationConfiguration initConfigAppLovinDiscovery = AppLovinSdkInitializationConfiguration.builder(appLovinSdkKey, activity).build();
+                    AppLovinSdk.getInstance(activity).initialize(initConfigAppLovinDiscovery, sdkConfig -> {
                     });
-                    break;
-
-                case HUAWEI:
-                    HwAds.init(activity);
-                    break;
-
-                case YANDEX:
-                    com.yandex.mobile.ads.common.MobileAds.initialize(activity, () -> {
-                        Log.d(TAG, "[" + adNetwork + "] initialize complete");
-                    });
-                    com.yandex.mobile.ads.common.MobileAds.enableDebugErrorIndicator(debug);
                     break;
 
                 case NONE:
