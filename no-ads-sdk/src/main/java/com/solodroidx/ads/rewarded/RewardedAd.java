@@ -7,6 +7,7 @@ import android.app.Activity;
 import com.solodroidx.ads.listener.OnRewardedAdCompleteListener;
 import com.solodroidx.ads.listener.OnRewardedAdDismissedListener;
 import com.solodroidx.ads.listener.OnRewardedAdErrorListener;
+import com.solodroidx.ads.listener.OnRewardedAdLoadedListener;
 
 @SuppressWarnings("deprecation")
 public class RewardedAd {
@@ -37,6 +38,11 @@ public class RewardedAd {
 
     public RewardedAd build(OnRewardedAdCompleteListener onComplete, OnRewardedAdDismissedListener onDismiss) {
         loadRewardedAd(onComplete, onDismiss);
+        return this;
+    }
+
+    public RewardedAd build(OnRewardedAdLoadedListener onLoaded, OnRewardedAdErrorListener onError, OnRewardedAdDismissedListener onDismiss, OnRewardedAdCompleteListener onComplete) {
+        loadAndShowRewardedAd(onLoaded, onError, onDismiss, onComplete);
         return this;
     }
 
@@ -142,14 +148,24 @@ public class RewardedAd {
         if (adStatus.equals(AD_STATUS_ON) && placementStatus != 0) {
             onError.onRewardedAdError();
         }
-
     }
 
     public void showRewardedBackupAd(OnRewardedAdCompleteListener onComplete, OnRewardedAdDismissedListener onDismiss, OnRewardedAdErrorListener onError) {
         if (adStatus.equals(AD_STATUS_ON) && placementStatus != 0) {
             onError.onRewardedAdError();
         }
+    }
 
+    public void loadAndShowRewardedAd(OnRewardedAdLoadedListener onLoaded, OnRewardedAdErrorListener onError, OnRewardedAdDismissedListener onDismiss, OnRewardedAdCompleteListener onComplete) {
+        if (adStatus.equals(AD_STATUS_ON) && placementStatus != 0) {
+            loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+        }
+    }
+
+    public void loadAndShowRewardedBackupAd(OnRewardedAdLoadedListener onLoaded, OnRewardedAdErrorListener onError, OnRewardedAdDismissedListener onDismiss, OnRewardedAdCompleteListener onComplete) {
+        if (adStatus.equals(AD_STATUS_ON) && placementStatus != 0) {
+            onError.onRewardedAdError();
+        }
     }
 
     public void destroyRewardedAd() {

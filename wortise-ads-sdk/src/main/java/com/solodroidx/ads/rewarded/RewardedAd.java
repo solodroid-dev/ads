@@ -18,6 +18,7 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.solodroidx.ads.listener.OnRewardedAdCompleteListener;
 import com.solodroidx.ads.listener.OnRewardedAdDismissedListener;
 import com.solodroidx.ads.listener.OnRewardedAdErrorListener;
+import com.solodroidx.ads.listener.OnRewardedAdLoadedListener;
 import com.solodroidx.ads.util.Tools;
 import com.wortise.ads.rewarded.models.Reward;
 
@@ -53,6 +54,11 @@ public class RewardedAd {
 
     public RewardedAd build(OnRewardedAdCompleteListener onComplete, OnRewardedAdDismissedListener onDismiss) {
         loadRewardedAd(onComplete, onDismiss);
+        return this;
+    }
+
+    public RewardedAd build(OnRewardedAdLoadedListener onLoaded, OnRewardedAdErrorListener onError, OnRewardedAdDismissedListener onDismiss, OnRewardedAdCompleteListener onComplete) {
+        loadAndShowRewardedAd(onLoaded, onError, onDismiss, onComplete);
         return this;
     }
 
@@ -473,6 +479,300 @@ public class RewardedAd {
             }
         }
 
+    }
+
+    public void loadAndShowRewardedAd(OnRewardedAdLoadedListener onLoaded, OnRewardedAdErrorListener onError, OnRewardedAdDismissedListener onDismiss, OnRewardedAdCompleteListener onComplete) {
+        if (adStatus.equals(AD_STATUS_ON) && placementStatus != 0) {
+            switch (mainAds) {
+                case ADMOB:
+                case FAN_BIDDING_ADMOB:
+                    com.google.android.gms.ads.rewarded.RewardedAd.load(activity, adMobRewardedId, Tools.getAdRequest(activity, legacyGDPR), new RewardedAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull com.google.android.gms.ads.rewarded.RewardedAd ad) {
+                            adMobRewardedAd = ad;
+                            onLoaded.onRewardedAdLoaded();
+
+                            adMobRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    super.onAdDismissedFullScreenContent();
+                                    adMobRewardedAd = null;
+                                    onDismiss.onRewardedAdDismissed();
+                                }
+
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(@NonNull com.google.android.gms.ads.AdError adError) {
+                                    super.onAdFailedToShowFullScreenContent(adError);
+                                    adMobRewardedAd = null;
+                                }
+                            });
+
+                            adMobRewardedAd.show(activity, rewardItem -> {
+                                onComplete.onRewardedAdComplete();
+                                Log.d(TAG, "The user earned the reward.");
+                            });
+                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad loaded");
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            Log.d(TAG, loadAdError.toString());
+                            adMobRewardedAd = null;
+                            loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                            Log.d(TAG, "[" + mainAds + "] " + "failed to load rewarded ad: " + loadAdError.getMessage() + ", try to load backup ad: " + backupAds);
+                        }
+                    });
+                    break;
+
+                case GOOGLE_AD_MANAGER:
+                case FAN_BIDDING_AD_MANAGER:
+                    com.google.android.gms.ads.rewarded.RewardedAd.load(activity, adManagerRewardedId, Tools.getGoogleAdManagerRequest(), new RewardedAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull com.google.android.gms.ads.rewarded.RewardedAd ad) {
+                            adManagerRewardedAd = ad;
+                            onLoaded.onRewardedAdLoaded();
+
+                            adManagerRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    super.onAdDismissedFullScreenContent();
+                                    adManagerRewardedAd = null;
+                                    onDismiss.onRewardedAdDismissed();
+                                }
+
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(@NonNull com.google.android.gms.ads.AdError adError) {
+                                    super.onAdFailedToShowFullScreenContent(adError);
+                                    adManagerRewardedAd = null;
+                                }
+                            });
+
+                            adManagerRewardedAd.show(activity, rewardItem -> {
+                                onComplete.onRewardedAdComplete();
+                                Log.d(TAG, "The user earned the reward.");
+                            });
+                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad loaded");
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            Log.d(TAG, loadAdError.toString());
+                            adManagerRewardedAd = null;
+                            loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                            Log.d(TAG, "[" + mainAds + "] " + "failed to load rewarded ad: " + loadAdError.getMessage() + ", try to load backup ad: " + backupAds);
+                        }
+                    });
+                    break;
+
+                case WORTISE:
+                    wortiseRewardedAd = new com.wortise.ads.rewarded.RewardedAd(activity, wortiseRewardedId);
+                    wortiseRewardedAd.setListener(new com.wortise.ads.rewarded.RewardedAd.Listener() {
+                        @Override
+                        public void onRewardedLoaded(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
+                            onLoaded.onRewardedAdLoaded();
+                            wortiseRewardedAd = rewardedAd;
+                            if (wortiseRewardedAd.isAvailable()) {
+                                wortiseRewardedAd.showAd();
+                            } else {
+                                loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                            }
+                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad loaded");
+                        }
+
+                        @Override
+                        public void onRewardedFailedToLoad(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull com.wortise.ads.AdError adError) {
+                            loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                            Log.d(TAG, "[" + mainAds + "] " + "onRewardedFailedToLoad: " + adError + ", try to load backup ad: " + backupAds);
+                        }
+
+                        @Override
+                        public void onRewardedFailedToShow(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull com.wortise.ads.AdError adError) {
+                            loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                            Log.d(TAG, "[" + mainAds + "] " + "onRewardedFailedToShow: " + adError + ", try to load backup ad: " + backupAds);
+                        }
+
+                        @Override
+                        public void onRewardedCompleted(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull Reward reward) {
+                            onComplete.onRewardedAdComplete();
+                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad complete");
+                        }
+
+                        @Override
+                        public void onRewardedDismissed(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
+                            onDismiss.onRewardedAdDismissed();
+                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad dismissed");
+                        }
+
+                        @Override
+                        public void onRewardedClicked(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
+
+                        }
+
+                        @Override
+                        public void onRewardedShown(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
+
+                        }
+
+                        @Override
+                        public void onRewardedImpression(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
+
+                        }
+                    });
+                    wortiseRewardedAd.loadAd();
+                    break;
+
+                default:
+                    loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                    break;
+            }
+        }
+    }
+
+    public void loadAndShowRewardedBackupAd(OnRewardedAdLoadedListener onLoaded, OnRewardedAdErrorListener onError, OnRewardedAdDismissedListener onDismiss, OnRewardedAdCompleteListener onComplete) {
+        if (adStatus.equals(AD_STATUS_ON) && placementStatus != 0) {
+            switch (backupAds) {
+                case ADMOB:
+                case FAN_BIDDING_ADMOB:
+                    com.google.android.gms.ads.rewarded.RewardedAd.load(activity, adMobRewardedId, Tools.getAdRequest(activity, legacyGDPR), new RewardedAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull com.google.android.gms.ads.rewarded.RewardedAd ad) {
+                            adMobRewardedAd = ad;
+                            onLoaded.onRewardedAdLoaded();
+
+                            adMobRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    super.onAdDismissedFullScreenContent();
+                                    adMobRewardedAd = null;
+                                    onDismiss.onRewardedAdDismissed();
+                                }
+
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(@NonNull com.google.android.gms.ads.AdError adError) {
+                                    super.onAdFailedToShowFullScreenContent(adError);
+                                    adMobRewardedAd = null;
+                                }
+                            });
+
+                            adMobRewardedAd.show(activity, rewardItem -> {
+                                onComplete.onRewardedAdComplete();
+                                Log.d(TAG, "The user earned the reward.");
+                            });
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad loaded");
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            Log.d(TAG, loadAdError.toString());
+                            adMobRewardedAd = null;
+                            onError.onRewardedAdError();
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "failed to load rewarded ad: " + loadAdError.getMessage() + ", try to load backup ad: " + backupAds);
+                        }
+                    });
+                    break;
+
+                case GOOGLE_AD_MANAGER:
+                case FAN_BIDDING_AD_MANAGER:
+                    com.google.android.gms.ads.rewarded.RewardedAd.load(activity, adManagerRewardedId, Tools.getGoogleAdManagerRequest(), new RewardedAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull com.google.android.gms.ads.rewarded.RewardedAd ad) {
+                            adManagerRewardedAd = ad;
+                            onLoaded.onRewardedAdLoaded();
+
+                            adManagerRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    super.onAdDismissedFullScreenContent();
+                                    adManagerRewardedAd = null;
+                                    onDismiss.onRewardedAdDismissed();
+                                }
+
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(@NonNull com.google.android.gms.ads.AdError adError) {
+                                    super.onAdFailedToShowFullScreenContent(adError);
+                                    adManagerRewardedAd = null;
+                                }
+                            });
+
+                            adManagerRewardedAd.show(activity, rewardItem -> {
+                                onComplete.onRewardedAdComplete();
+                                Log.d(TAG, "The user earned the reward.");
+                            });
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad loaded");
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            Log.d(TAG, loadAdError.toString());
+                            adManagerRewardedAd = null;
+                            onError.onRewardedAdError();
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "failed to load rewarded ad: " + loadAdError.getMessage() + ", try to load backup ad: " + backupAds);
+                        }
+                    });
+                    break;
+
+                case WORTISE:
+                    wortiseRewardedAd = new com.wortise.ads.rewarded.RewardedAd(activity, wortiseRewardedId);
+                    wortiseRewardedAd.setListener(new com.wortise.ads.rewarded.RewardedAd.Listener() {
+                        @Override
+                        public void onRewardedLoaded(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
+                            onLoaded.onRewardedAdLoaded();
+                            wortiseRewardedAd = rewardedAd;
+                            if (wortiseRewardedAd.isAvailable()) {
+                                wortiseRewardedAd.showAd();
+                            } else {
+                                onError.onRewardedAdError();
+                            }
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad loaded");
+                        }
+
+                        @Override
+                        public void onRewardedFailedToLoad(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull com.wortise.ads.AdError adError) {
+                            onError.onRewardedAdError();
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "onRewardedFailedToLoad: " + adError + ", try to load backup ad: " + backupAds);
+                        }
+
+                        @Override
+                        public void onRewardedFailedToShow(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull com.wortise.ads.AdError adError) {
+                            onError.onRewardedAdError();
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "onRewardedFailedToShow: " + adError + ", try to load backup ad: " + backupAds);
+                        }
+
+                        @Override
+                        public void onRewardedCompleted(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull Reward reward) {
+                            onComplete.onRewardedAdComplete();
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad complete");
+                        }
+
+                        @Override
+                        public void onRewardedDismissed(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
+                            onDismiss.onRewardedAdDismissed();
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad dismissed");
+                        }
+
+                        @Override
+                        public void onRewardedClicked(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
+
+                        }
+
+                        @Override
+                        public void onRewardedShown(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
+
+                        }
+
+                        @Override
+                        public void onRewardedImpression(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
+
+                        }
+                    });
+                    wortiseRewardedAd.loadAd();
+                    break;
+
+                default:
+                    onError.onRewardedAdError();
+                    break;
+            }
+        }
     }
 
     public void destroyRewardedAd() {

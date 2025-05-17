@@ -26,12 +26,12 @@ import com.solodroidx.ads.listener.OnInterstitialAdDismissedListener;
 import com.solodroidx.ads.listener.OnRewardedAdCompleteListener;
 import com.solodroidx.ads.listener.OnRewardedAdDismissedListener;
 import com.solodroidx.ads.listener.OnRewardedAdErrorListener;
+import com.solodroidx.ads.listener.OnRewardedAdLoadedListener;
 import com.solodroidx.ads.listener.OnShowAdCompleteListener;
 import com.solodroidx.ads.nativead.NativeAd;
 import com.solodroidx.ads.nativead.NativeAdView;
 import com.solodroidx.ads.nativead.NativeAdViewHolder;
 import com.solodroidx.ads.rewarded.RewardedAd;
-import com.solodroidx.ads.util.Tools;
 
 public class AdsManager {
 
@@ -157,7 +157,35 @@ public class AdsManager {
 //                });
     }
 
-    public void loadRewardedAd() {
+//    public void loadRewardedAd() {
+//        rewardedAd.setAdStatus(Constant.AD_STATUS)
+//                .setMainAds(Constant.AD_NETWORK)
+//                .setBackupAds(Constant.BACKUP_AD_NETWORK)
+//                .setAdMobRewardedId(Constant.ADMOB_REWARDED_ID)
+//                .setAdManagerRewardedId(Constant.GOOGLE_AD_MANAGER_REWARDED_ID)
+//                .setFanRewardedId(Constant.FAN_REWARDED_ID)
+//                .setUnityRewardedId(Constant.UNITY_REWARDED_ID)
+//                .setApplovinMaxRewardedId(Constant.APPLOVIN_MAX_REWARDED_ID)
+//                .setApplovinDiscRewardedZoneId(Constant.APPLOVIN_DISC_REWARDED_ZONE_ID)
+//                .setIronSourceRewardedId(Constant.IRONSOURCE_REWARDED_ID)
+//                .setWortiseRewardedId(Constant.WORTISE_REWARDED_ID)
+//                .setPangleRewardedId(Constant.PANGLE_REWARDED_ID)
+//                .setHuaweiRewardedId(Constant.HUAWEI_REWARDED_ID)
+//                .setYandexRewardedId(Constant.YANDEX_REWARDED_ID)
+//                .build(new OnRewardedAdCompleteListener() {
+//                    @Override
+//                    public void onRewardedAdComplete() {
+//                        Toast.makeText(activity, "Rewarded complete", Toast.LENGTH_SHORT).show();
+//                    }
+//                }, new OnRewardedAdDismissedListener() {
+//                    @Override
+//                    public void onRewardedAdDismissed() {
+//
+//                    }
+//                });
+//    }
+
+    public void loadAndShowRewardedAd(OnRewardedAdLoadedListener onLoaded, OnRewardedAdErrorListener onError, OnRewardedAdDismissedListener onDismiss, OnRewardedAdCompleteListener onComplete) {
         rewardedAd.setAdStatus(Constant.AD_STATUS)
                 .setMainAds(Constant.AD_NETWORK)
                 .setBackupAds(Constant.BACKUP_AD_NETWORK)
@@ -172,17 +200,7 @@ public class AdsManager {
                 .setPangleRewardedId(Constant.PANGLE_REWARDED_ID)
                 .setHuaweiRewardedId(Constant.HUAWEI_REWARDED_ID)
                 .setYandexRewardedId(Constant.YANDEX_REWARDED_ID)
-                .build(new OnRewardedAdCompleteListener() {
-                    @Override
-                    public void onRewardedAdComplete() {
-                        Toast.makeText(activity, "Rewarded complete", Toast.LENGTH_SHORT).show();
-                    }
-                }, new OnRewardedAdDismissedListener() {
-                    @Override
-                    public void onRewardedAdDismissed() {
-
-                    }
-                });
+                .build(onLoaded, onError, onDismiss, onComplete);
     }
 
     public void showRewardedAd() {

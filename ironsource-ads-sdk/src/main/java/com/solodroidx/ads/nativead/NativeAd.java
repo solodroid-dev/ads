@@ -5,19 +5,16 @@ import static com.solodroidx.ads.util.Constant.AD_STATUS_ON;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_ADMOB;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_AD_MANAGER;
 import static com.solodroidx.ads.util.Constant.GOOGLE_AD_MANAGER;
-import static com.solodroidx.ads.util.Constant.IRONSOURCE;
 
 import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.ads.AdListener;
@@ -25,10 +22,6 @@ import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.nativead.MediaView;
 import com.google.android.material.card.MaterialCardView;
-import com.ironsource.mediationsdk.ads.nativead.LevelPlayNativeAd;
-import com.ironsource.mediationsdk.ads.nativead.LevelPlayNativeAdListener;
-import com.ironsource.mediationsdk.adunit.adapter.utility.AdInfo;
-import com.ironsource.mediationsdk.logger.IronSourceError;
 import com.solodroidx.ads.R;
 import com.solodroidx.ads.util.AdManagerTemplateView;
 import com.solodroidx.ads.util.NativeTemplateStyle;

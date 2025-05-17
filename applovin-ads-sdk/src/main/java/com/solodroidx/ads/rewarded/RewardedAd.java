@@ -36,6 +36,7 @@ import com.solodroidx.ads.helper.AppLovinCustomEventInterstitial;
 import com.solodroidx.ads.listener.OnRewardedAdCompleteListener;
 import com.solodroidx.ads.listener.OnRewardedAdDismissedListener;
 import com.solodroidx.ads.listener.OnRewardedAdErrorListener;
+import com.solodroidx.ads.listener.OnRewardedAdLoadedListener;
 import com.solodroidx.ads.util.Tools;
 
 @SuppressWarnings("deprecation")
@@ -72,6 +73,11 @@ public class RewardedAd {
 
     public RewardedAd build(OnRewardedAdCompleteListener onComplete, OnRewardedAdDismissedListener onDismiss) {
         loadRewardedAd(onComplete, onDismiss);
+        return this;
+    }
+
+    public RewardedAd build(OnRewardedAdLoadedListener onLoaded, OnRewardedAdErrorListener onError, OnRewardedAdDismissedListener onDismiss, OnRewardedAdCompleteListener onComplete) {
+        loadAndShowRewardedAd(onLoaded, onError, onDismiss, onComplete);
         return this;
     }
 
@@ -576,6 +582,372 @@ public class RewardedAd {
             }
         }
 
+    }
+
+    public void loadAndShowRewardedAd(OnRewardedAdLoadedListener onLoaded, OnRewardedAdErrorListener onError, OnRewardedAdDismissedListener onDismiss, OnRewardedAdCompleteListener onComplete) {
+        if (adStatus.equals(AD_STATUS_ON) && placementStatus != 0) {
+            switch (mainAds) {
+                case ADMOB:
+                case FAN_BIDDING_ADMOB:
+                    com.google.android.gms.ads.rewarded.RewardedAd.load(activity, adMobRewardedId, Tools.getAdRequest(activity, legacyGDPR), new RewardedAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull com.google.android.gms.ads.rewarded.RewardedAd ad) {
+                            adMobRewardedAd = ad;
+                            onLoaded.onRewardedAdLoaded();
+
+                            adMobRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    super.onAdDismissedFullScreenContent();
+                                    adMobRewardedAd = null;
+                                    onDismiss.onRewardedAdDismissed();
+                                }
+
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(@NonNull com.google.android.gms.ads.AdError adError) {
+                                    super.onAdFailedToShowFullScreenContent(adError);
+                                    adMobRewardedAd = null;
+                                }
+                            });
+
+                            adMobRewardedAd.show(activity, rewardItem -> {
+                                onComplete.onRewardedAdComplete();
+                                Log.d(TAG, "The user earned the reward.");
+                            });
+                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad loaded");
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            Log.d(TAG, loadAdError.toString());
+                            adMobRewardedAd = null;
+                            loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                            Log.d(TAG, "[" + mainAds + "] " + "failed to load rewarded ad: " + loadAdError.getMessage() + ", try to load backup ad: " + backupAds);
+                        }
+                    });
+                    break;
+
+                case GOOGLE_AD_MANAGER:
+                case FAN_BIDDING_AD_MANAGER:
+                    com.google.android.gms.ads.rewarded.RewardedAd.load(activity, adManagerRewardedId, Tools.getGoogleAdManagerRequest(), new RewardedAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull com.google.android.gms.ads.rewarded.RewardedAd ad) {
+                            adManagerRewardedAd = ad;
+                            onLoaded.onRewardedAdLoaded();
+
+                            adManagerRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    super.onAdDismissedFullScreenContent();
+                                    adManagerRewardedAd = null;
+                                    onDismiss.onRewardedAdDismissed();
+                                }
+
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(@NonNull com.google.android.gms.ads.AdError adError) {
+                                    super.onAdFailedToShowFullScreenContent(adError);
+                                    adManagerRewardedAd = null;
+                                }
+                            });
+
+                            adManagerRewardedAd.show(activity, rewardItem -> {
+                                onComplete.onRewardedAdComplete();
+                                Log.d(TAG, "The user earned the reward.");
+                            });
+                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad loaded");
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            Log.d(TAG, loadAdError.toString());
+                            adManagerRewardedAd = null;
+                            loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                            Log.d(TAG, "[" + mainAds + "] " + "failed to load rewarded ad: " + loadAdError.getMessage() + ", try to load backup ad: " + backupAds);
+                        }
+                    });
+                    break;
+
+                case APPLOVIN:
+                case APPLOVIN_MAX:
+                case FAN_BIDDING_APPLOVIN_MAX:
+                    applovinMaxRewardedAd = MaxRewardedAd.getInstance(applovinMaxRewardedId, activity);
+                    applovinMaxRewardedAd.loadAd();
+                    applovinMaxRewardedAd.setListener(new MaxRewardedAdListener() {
+                        @Override
+                        public void onUserRewarded(@NonNull MaxAd maxAd, @NonNull MaxReward maxReward) {
+                            onComplete.onRewardedAdComplete();
+                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad complete");
+                        }
+
+                        @Override
+                        public void onAdLoaded(@NonNull MaxAd maxAd) {
+                            onLoaded.onRewardedAdLoaded();
+                            if (applovinMaxRewardedAd != null && applovinMaxRewardedAd.isReady()) {
+                                applovinMaxRewardedAd.showAd();
+                            } else {
+                                loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                            }
+                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad loaded and show ad if available");
+                        }
+
+                        @Override
+                        public void onAdDisplayed(@NonNull MaxAd maxAd) {
+
+                        }
+
+                        @Override
+                        public void onAdHidden(@NonNull MaxAd maxAd) {
+                            onDismiss.onRewardedAdDismissed();
+                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad hidden");
+                        }
+
+                        @Override
+                        public void onAdClicked(@NonNull MaxAd maxAd) {
+
+                        }
+
+                        @Override
+                        public void onAdLoadFailed(@NonNull String s, @NonNull MaxError maxError) {
+                            loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                            Log.d(TAG, "[" + mainAds + "] " + "failed to load rewarded ad: " + maxError.getMessage() + ", try to load backup ad: " + backupAds);
+                        }
+
+                        @Override
+                        public void onAdDisplayFailed(@NonNull MaxAd maxAd, @NonNull MaxError maxError) {
+                            loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                            Log.d(TAG, "[" + mainAds + "] " + "failed to load rewarded ad: " + maxError.getMessage() + ", try to load backup ad: " + backupAds);
+                        }
+                    });
+                    break;
+
+                case APPLOVIN_DISCOVERY:
+                    AdRequest.Builder builder = new AdRequest.Builder();
+                    Bundle interstitialExtras = new Bundle();
+                    interstitialExtras.putString("zone_id", applovinDiscRewardedZoneId);
+                    builder.addCustomEventExtrasBundle(AppLovinCustomEventInterstitial.class, interstitialExtras);
+                    AppLovinSdk.getInstance(activity).getAdService().loadNextAd(AppLovinAdSize.INTERSTITIAL, new AppLovinAdLoadListener() {
+                        @Override
+                        public void adReceived(AppLovinAd ad) {
+                            appLovinAd = ad;
+                            onLoaded.onRewardedAdLoaded();
+                            if (appLovinInterstitialAdDialog != null) {
+                                appLovinInterstitialAdDialog.showAndRender(appLovinAd);
+                            } else {
+                                loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                            }
+                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad loaded");
+                        }
+
+                        @Override
+                        public void failedToReceiveAd(int errorCode) {
+                            loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                            Log.d(TAG, "[" + mainAds + "] " + "failed to load rewarded ad: " + errorCode + ", try to load backup ad: " + backupAds);
+                        }
+                    });
+                    appLovinInterstitialAdDialog = AppLovinInterstitialAd.create(AppLovinSdk.getInstance(activity), activity);
+                    appLovinInterstitialAdDialog.setAdDisplayListener(new AppLovinAdDisplayListener() {
+                        @Override
+                        public void adDisplayed(AppLovinAd appLovinAd) {
+                            onComplete.onRewardedAdComplete();
+                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad displayed");
+                        }
+
+                        @Override
+                        public void adHidden(AppLovinAd appLovinAd) {
+                            onDismiss.onRewardedAdDismissed();
+                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad hidden");
+                        }
+                    });
+                    break;
+
+                default:
+                    loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                    break;
+            }
+        }
+    }
+
+    public void loadAndShowRewardedBackupAd(OnRewardedAdLoadedListener onLoaded, OnRewardedAdErrorListener onError, OnRewardedAdDismissedListener onDismiss, OnRewardedAdCompleteListener onComplete) {
+        if (adStatus.equals(AD_STATUS_ON) && placementStatus != 0) {
+            switch (backupAds) {
+                case ADMOB:
+                case FAN_BIDDING_ADMOB:
+                    com.google.android.gms.ads.rewarded.RewardedAd.load(activity, adMobRewardedId, Tools.getAdRequest(activity, legacyGDPR), new RewardedAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull com.google.android.gms.ads.rewarded.RewardedAd ad) {
+                            adMobRewardedAd = ad;
+                            onLoaded.onRewardedAdLoaded();
+
+                            adMobRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    super.onAdDismissedFullScreenContent();
+                                    adMobRewardedAd = null;
+                                    onDismiss.onRewardedAdDismissed();
+                                }
+
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(@NonNull com.google.android.gms.ads.AdError adError) {
+                                    super.onAdFailedToShowFullScreenContent(adError);
+                                    adMobRewardedAd = null;
+                                }
+                            });
+
+                            adMobRewardedAd.show(activity, rewardItem -> {
+                                onComplete.onRewardedAdComplete();
+                                Log.d(TAG, "The user earned the reward.");
+                            });
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad loaded");
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            Log.d(TAG, loadAdError.toString());
+                            adMobRewardedAd = null;
+                            onError.onRewardedAdError();
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "failed to load rewarded ad: " + loadAdError.getMessage() + ", try to load backup ad: " + backupAds);
+                        }
+                    });
+                    break;
+
+                case GOOGLE_AD_MANAGER:
+                case FAN_BIDDING_AD_MANAGER:
+                    com.google.android.gms.ads.rewarded.RewardedAd.load(activity, adManagerRewardedId, Tools.getGoogleAdManagerRequest(), new RewardedAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull com.google.android.gms.ads.rewarded.RewardedAd ad) {
+                            adManagerRewardedAd = ad;
+                            onLoaded.onRewardedAdLoaded();
+
+                            adManagerRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    super.onAdDismissedFullScreenContent();
+                                    adManagerRewardedAd = null;
+                                    onDismiss.onRewardedAdDismissed();
+                                }
+
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(@NonNull com.google.android.gms.ads.AdError adError) {
+                                    super.onAdFailedToShowFullScreenContent(adError);
+                                    adManagerRewardedAd = null;
+                                }
+                            });
+
+                            adManagerRewardedAd.show(activity, rewardItem -> {
+                                onComplete.onRewardedAdComplete();
+                                Log.d(TAG, "The user earned the reward.");
+                            });
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad loaded");
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            Log.d(TAG, loadAdError.toString());
+                            adManagerRewardedAd = null;
+                            onError.onRewardedAdError();
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "failed to load rewarded ad: " + loadAdError.getMessage() + ", try to load backup ad: " + backupAds);
+                        }
+                    });
+                    break;
+
+                case APPLOVIN:
+                case APPLOVIN_MAX:
+                case FAN_BIDDING_APPLOVIN_MAX:
+                    applovinMaxRewardedAd = MaxRewardedAd.getInstance(applovinMaxRewardedId, activity);
+                    applovinMaxRewardedAd.loadAd();
+                    applovinMaxRewardedAd.setListener(new MaxRewardedAdListener() {
+                        @Override
+                        public void onUserRewarded(@NonNull MaxAd maxAd, @NonNull MaxReward maxReward) {
+                            onComplete.onRewardedAdComplete();
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad complete");
+                        }
+
+                        @Override
+                        public void onAdLoaded(@NonNull MaxAd maxAd) {
+                            onLoaded.onRewardedAdLoaded();
+                            if (applovinMaxRewardedAd != null && applovinMaxRewardedAd.isReady()) {
+                                applovinMaxRewardedAd.showAd();
+                            } else {
+                                onError.onRewardedAdError();
+                            }
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad loaded and show ad if available");
+                        }
+
+                        @Override
+                        public void onAdDisplayed(@NonNull MaxAd maxAd) {
+
+                        }
+
+                        @Override
+                        public void onAdHidden(@NonNull MaxAd maxAd) {
+                            onDismiss.onRewardedAdDismissed();
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad hidden");
+                        }
+
+                        @Override
+                        public void onAdClicked(@NonNull MaxAd maxAd) {
+
+                        }
+
+                        @Override
+                        public void onAdLoadFailed(@NonNull String s, @NonNull MaxError maxError) {
+                            onError.onRewardedAdError();
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "failed to load rewarded ad: " + maxError.getMessage() + ", try to load backup ad: " + backupAds);
+                        }
+
+                        @Override
+                        public void onAdDisplayFailed(@NonNull MaxAd maxAd, @NonNull MaxError maxError) {
+                            onError.onRewardedAdError();
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "failed to load rewarded ad: " + maxError.getMessage() + ", try to load backup ad: " + backupAds);
+                        }
+                    });
+                    break;
+
+                case APPLOVIN_DISCOVERY:
+                    AdRequest.Builder builder = new AdRequest.Builder();
+                    Bundle interstitialExtras = new Bundle();
+                    interstitialExtras.putString("zone_id", applovinDiscRewardedZoneId);
+                    builder.addCustomEventExtrasBundle(AppLovinCustomEventInterstitial.class, interstitialExtras);
+                    AppLovinSdk.getInstance(activity).getAdService().loadNextAd(AppLovinAdSize.INTERSTITIAL, new AppLovinAdLoadListener() {
+                        @Override
+                        public void adReceived(AppLovinAd ad) {
+                            appLovinAd = ad;
+                            onLoaded.onRewardedAdLoaded();
+                            if (appLovinInterstitialAdDialog != null) {
+                                appLovinInterstitialAdDialog.showAndRender(appLovinAd);
+                            } else {
+                                onError.onRewardedAdError();
+                            }
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad loaded");
+                        }
+
+                        @Override
+                        public void failedToReceiveAd(int errorCode) {
+                            onError.onRewardedAdError();
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "failed to load rewarded ad: " + errorCode + ", try to load backup ad: " + backupAds);
+                        }
+                    });
+                    appLovinInterstitialAdDialog = AppLovinInterstitialAd.create(AppLovinSdk.getInstance(activity), activity);
+                    appLovinInterstitialAdDialog.setAdDisplayListener(new AppLovinAdDisplayListener() {
+                        @Override
+                        public void adDisplayed(AppLovinAd appLovinAd) {
+                            onComplete.onRewardedAdComplete();
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad displayed");
+                        }
+
+                        @Override
+                        public void adHidden(AppLovinAd appLovinAd) {
+                            onDismiss.onRewardedAdDismissed();
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad hidden");
+                        }
+                    });
+                    break;
+
+                default:
+                    onError.onRewardedAdError();
+                    break;
+            }
+        }
     }
 
     public void destroyRewardedAd() {

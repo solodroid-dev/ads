@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import com.solodroid.ads.sdkdemo.R;
 import com.solodroid.ads.sdkdemo.data.Constant;
 import com.solodroid.ads.sdkdemo.database.SharedPref;
 import com.solodroid.ads.sdkdemo.helper.AdsManager;
+import com.solodroid.ads.sdkdemo.helper.MaterialProgressDialog;
 import com.solodroidx.ads.appopen.AppOpenAd;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,12 +39,14 @@ public class MainActivity extends AppCompatActivity {
     SharedPref sharedPref;
     Button btnInterstitial;
     Button btnRewarded;
+    Button btnRewarded2;
     Button btnNative;
     Button btnSelectAds;
     Button btnNativeAdStyle;
     LinearLayout nativeAdViewContainer;
     LinearLayout bannerAdView;
     AdsManager adsManager;
+    MaterialProgressDialog.Builder progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         adsManager = new AdsManager(this);
         initView();
+        initProgressDialog();
         new Handler(Looper.getMainLooper()).postDelayed(this::loadAds, 250);
         switchAppTheme();
 
@@ -70,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         btnInterstitial = findViewById(R.id.btn_interstitial);
         btnNative = findViewById(R.id.btn_native);
         btnRewarded = findViewById(R.id.btn_rewarded);
+        btnRewarded2 = findViewById(R.id.btn_rewarded2);
 
         btnSelectAds = findViewById(R.id.btn_select_ads);
         btnSelectAds.setText("Selected Ad: " + Constant.AD_NETWORK);
@@ -78,6 +84,12 @@ public class MainActivity extends AppCompatActivity {
 
         btnNativeAdStyle = findViewById(R.id.btn_native_ad_style);
         btnNativeAdStyle.setOnClickListener(v -> changeNativeAdStyle());
+    }
+
+    private void initProgressDialog() {
+        progressDialog = new MaterialProgressDialog.Builder(this);
+        progressDialog.setMessage("Loading ads, please wait...");
+        progressDialog.build();
     }
 
     private void loadAds() {
@@ -96,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), SecondActivity.class));
             Log.d(TAG, "Rawr!!!!!");
         });
-        adsManager.loadRewardedAd();
+        //adsManager.loadRewardedAd();
         setNativeAdStyle(nativeAdViewContainer);
         adsManager.loadNativeAd();
 
@@ -106,7 +118,27 @@ public class MainActivity extends AppCompatActivity {
             //adsManager.destroyBannerAd();
         });
 
-        btnRewarded.setOnClickListener(view -> adsManager.showRewardedAd());
+        btnRewarded.setOnClickListener(v -> adsManager.showRewardedAd());
+
+        btnRewarded2.setOnClickListener(v -> {
+            progressDialog.show();
+            adsManager.loadAndShowRewardedAd(
+                    () -> {
+                        //onRewardedAdLoaded
+                        progressDialog.dismiss();
+                    }, () -> {
+                        //onRewardedAdError
+                        progressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "rewarded error", Toast.LENGTH_SHORT).show();
+                    }, () -> {
+                        //onRewardedAdDismissed
+                        Toast.makeText(getApplicationContext(), "rewarded dismissed", Toast.LENGTH_SHORT).show();
+                    }, () -> {
+                        //onRewardedAdComplete
+                        Toast.makeText(getApplicationContext(), "rewarded complete", Toast.LENGTH_SHORT).show();
+                    }
+            );
+        });
 
         btnNative.setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(), SecondActivity.class));

@@ -25,7 +25,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -59,10 +58,8 @@ import com.ironsource.mediationsdk.IronSource;
 import com.ironsource.mediationsdk.adunit.adapter.utility.AdInfo;
 import com.ironsource.mediationsdk.logger.IronSourceError;
 import com.ironsource.mediationsdk.sdk.LevelPlayInterstitialListener;
-import com.solodroidx.ads.appopen.AppOpenAd;
 import com.solodroidx.ads.helper.AppLovinCustomEventInterstitial;
 import com.solodroidx.ads.listener.OnInterstitialAdDismissedListener;
-import com.solodroidx.ads.listener.OnShowAdCompleteListener;
 import com.solodroidx.ads.util.Tools;
 import com.startapp.sdk.adsbase.Ad;
 import com.startapp.sdk.adsbase.StartAppAd;

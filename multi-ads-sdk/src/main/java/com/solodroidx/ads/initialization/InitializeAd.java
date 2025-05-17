@@ -12,14 +12,10 @@ import static com.solodroidx.ads.util.Constant.FAN_BIDDING_AD_MANAGER;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_APPLOVIN_MAX;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_IRONSOURCE;
 import static com.solodroidx.ads.util.Constant.GOOGLE_AD_MANAGER;
-import static com.solodroidx.ads.util.Constant.HUAWEI;
 import static com.solodroidx.ads.util.Constant.IRONSOURCE;
 import static com.solodroidx.ads.util.Constant.NONE;
-import static com.solodroidx.ads.util.Constant.PANGLE;
 import static com.solodroidx.ads.util.Constant.STARTAPP;
 import static com.solodroidx.ads.util.Constant.UNITY;
-import static com.solodroidx.ads.util.Constant.WORTISE;
-import static com.solodroidx.ads.util.Constant.YANDEX;
 
 import android.app.Activity;
 import android.util.Log;
@@ -38,8 +34,6 @@ import com.unity3d.ads.IUnityAdsInitializationListener;
 import com.unity3d.ads.UnityAds;
 
 import java.util.Map;
-
-import kotlin.Unit;
 
 @SuppressWarnings("deprecation")
 public class InitializeAd {

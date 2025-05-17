@@ -12,16 +12,12 @@ import static com.solodroidx.ads.util.Constant.FAN_BIDDING_AD_MANAGER;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_APPLOVIN_MAX;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_IRONSOURCE;
 import static com.solodroidx.ads.util.Constant.GOOGLE_AD_MANAGER;
-import static com.solodroidx.ads.util.Constant.HUAWEI;
 import static com.solodroidx.ads.util.Constant.IRONSOURCE;
 import static com.solodroidx.ads.util.Constant.NONE;
-import static com.solodroidx.ads.util.Constant.PANGLE;
 import static com.solodroidx.ads.util.Constant.STARTAPP;
 import static com.solodroidx.ads.util.Constant.UNITY;
 import static com.solodroidx.ads.util.Constant.UNITY_ADS_BANNER_HEIGHT_MEDIUM;
 import static com.solodroidx.ads.util.Constant.UNITY_ADS_BANNER_WIDTH_MEDIUM;
-import static com.solodroidx.ads.util.Constant.WORTISE;
-import static com.solodroidx.ads.util.Constant.YANDEX;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -32,7 +28,6 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.applovin.adview.AppLovinAdView;
 import com.applovin.mediation.MaxAd;

@@ -4,7 +4,6 @@ import static com.solodroidx.ads.util.Constant.ADMOB;
 import static com.solodroidx.ads.util.Constant.APPLOVIN_DISCOVERY;
 import static com.solodroidx.ads.util.Constant.APPLOVIN_MAX;
 import static com.solodroidx.ads.util.Constant.GOOGLE_AD_MANAGER;
-import static com.solodroidx.ads.util.Constant.PANGLE;
 import static com.solodroidx.ads.util.Constant.STARTAPP;
 
 import android.annotation.SuppressLint;

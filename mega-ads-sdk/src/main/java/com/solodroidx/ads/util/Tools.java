@@ -11,8 +11,6 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
 
-import androidx.annotation.NonNull;
-
 import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;

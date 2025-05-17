@@ -23,6 +23,7 @@ import com.huawei.hms.ads.reward.RewardAdStatusListener;
 import com.solodroidx.ads.listener.OnRewardedAdCompleteListener;
 import com.solodroidx.ads.listener.OnRewardedAdDismissedListener;
 import com.solodroidx.ads.listener.OnRewardedAdErrorListener;
+import com.solodroidx.ads.listener.OnRewardedAdLoadedListener;
 import com.solodroidx.ads.util.Tools;
 
 @SuppressWarnings("deprecation")
@@ -57,6 +58,11 @@ public class RewardedAd {
 
     public RewardedAd build(OnRewardedAdCompleteListener onComplete, OnRewardedAdDismissedListener onDismiss) {
         loadRewardedAd(onComplete, onDismiss);
+        return this;
+    }
+
+    public RewardedAd build(OnRewardedAdLoadedListener onLoaded, OnRewardedAdErrorListener onError, OnRewardedAdDismissedListener onDismiss, OnRewardedAdCompleteListener onComplete) {
+        loadAndShowRewardedAd(onLoaded, onError, onDismiss, onComplete);
         return this;
     }
 
@@ -486,6 +492,288 @@ public class RewardedAd {
             }
         }
 
+    }
+
+    public void loadAndShowRewardedAd(OnRewardedAdLoadedListener onLoaded, OnRewardedAdErrorListener onError, OnRewardedAdDismissedListener onDismiss, OnRewardedAdCompleteListener onComplete) {
+        if (adStatus.equals(AD_STATUS_ON) && placementStatus != 0) {
+            switch (mainAds) {
+                case ADMOB:
+                case FAN_BIDDING_ADMOB:
+                    com.google.android.gms.ads.rewarded.RewardedAd.load(activity, adMobRewardedId, Tools.getAdRequest(activity, legacyGDPR), new RewardedAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull com.google.android.gms.ads.rewarded.RewardedAd ad) {
+                            adMobRewardedAd = ad;
+                            onLoaded.onRewardedAdLoaded();
+
+                            adMobRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    super.onAdDismissedFullScreenContent();
+                                    adMobRewardedAd = null;
+                                    onDismiss.onRewardedAdDismissed();
+                                }
+
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(@NonNull com.google.android.gms.ads.AdError adError) {
+                                    super.onAdFailedToShowFullScreenContent(adError);
+                                    adMobRewardedAd = null;
+                                }
+                            });
+
+                            adMobRewardedAd.show(activity, rewardItem -> {
+                                onComplete.onRewardedAdComplete();
+                                Log.d(TAG, "The user earned the reward.");
+                            });
+                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad loaded");
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            Log.d(TAG, loadAdError.toString());
+                            adMobRewardedAd = null;
+                            loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                            Log.d(TAG, "[" + mainAds + "] " + "failed to load rewarded ad: " + loadAdError.getMessage() + ", try to load backup ad: " + backupAds);
+                        }
+                    });
+                    break;
+
+                case GOOGLE_AD_MANAGER:
+                case FAN_BIDDING_AD_MANAGER:
+                    com.google.android.gms.ads.rewarded.RewardedAd.load(activity, adManagerRewardedId, Tools.getGoogleAdManagerRequest(), new RewardedAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull com.google.android.gms.ads.rewarded.RewardedAd ad) {
+                            adManagerRewardedAd = ad;
+                            onLoaded.onRewardedAdLoaded();
+
+                            adManagerRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    super.onAdDismissedFullScreenContent();
+                                    adManagerRewardedAd = null;
+                                    onDismiss.onRewardedAdDismissed();
+                                }
+
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(@NonNull com.google.android.gms.ads.AdError adError) {
+                                    super.onAdFailedToShowFullScreenContent(adError);
+                                    adManagerRewardedAd = null;
+                                }
+                            });
+
+                            adManagerRewardedAd.show(activity, rewardItem -> {
+                                onComplete.onRewardedAdComplete();
+                                Log.d(TAG, "The user earned the reward.");
+                            });
+                            Log.d(TAG, "[" + mainAds + "] " + "rewarded ad loaded");
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            Log.d(TAG, loadAdError.toString());
+                            adManagerRewardedAd = null;
+                            loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                            Log.d(TAG, "[" + mainAds + "] " + "failed to load rewarded ad: " + loadAdError.getMessage() + ", try to load backup ad: " + backupAds);
+                        }
+                    });
+                    break;
+
+                case HUAWEI:
+                    if (huaweiRewardedAd == null) {
+                        huaweiRewardedAd = new RewardAd(activity, huaweiRewardedId);
+                        AdParam.Builder adParamBuilder = new AdParam.Builder();
+                        BiddingParam biddingParam = new BiddingParam();
+                        adParamBuilder.addBiddingParamMap(huaweiRewardedId, biddingParam);
+                        adParamBuilder.setTMax(500);
+                        huaweiRewardedAd.loadAd(new AdParam.Builder().build(), new RewardAdLoadListener() {
+                            @Override
+                            public void onRewardedLoaded() {
+                                onLoaded.onRewardedAdLoaded();
+                                huaweiRewardedAd.show(activity, new RewardAdStatusListener() {
+                                    @Override
+                                    public void onRewardAdOpened() {
+                                        // Rewarded ad opened.
+                                    }
+
+                                    @Override
+                                    public void onRewardAdFailedToShow(int errorCode) {
+                                        // Failed to display the rewarded ad.
+                                        loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                                        huaweiRewardedAd = null;
+                                    }
+
+                                    @Override
+                                    public void onRewardAdClosed() {
+                                        // Rewarded ad closed.
+                                        huaweiRewardedAd = null;
+                                        onDismiss.onRewardedAdDismissed();
+                                    }
+
+                                    @Override
+                                    public void onRewarded(com.huawei.hms.ads.reward.Reward reward) {
+                                        onComplete.onRewardedAdComplete();
+                                        Log.d(TAG, "The user earned the reward.");
+                                        // Provide a reward when reward conditions are met.
+                                    }
+                                });
+                                Log.d(TAG, "[" + mainAds + "] " + "rewarded ad loaded and show");
+                            }
+
+                            @Override
+                            public void onRewardAdFailedToLoad(int errorCode) {
+                                huaweiRewardedAd = null;
+                                loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                                Log.d(TAG, "[" + mainAds + "] " + "failed to load rewarded ad with unit id: " + huaweiRewardedId + " with error code: " + errorCode + ", try to load backup ad: " + backupAds);
+                            }
+                        });
+                    }
+                    break;
+
+                default:
+                    loadAndShowRewardedBackupAd(onLoaded, onError, onDismiss, onComplete);
+                    break;
+            }
+        }
+    }
+
+    public void loadAndShowRewardedBackupAd(OnRewardedAdLoadedListener onLoaded, OnRewardedAdErrorListener onError, OnRewardedAdDismissedListener onDismiss, OnRewardedAdCompleteListener onComplete) {
+        if (adStatus.equals(AD_STATUS_ON) && placementStatus != 0) {
+            switch (backupAds) {
+                case ADMOB:
+                case FAN_BIDDING_ADMOB:
+                    com.google.android.gms.ads.rewarded.RewardedAd.load(activity, adMobRewardedId, Tools.getAdRequest(activity, legacyGDPR), new RewardedAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull com.google.android.gms.ads.rewarded.RewardedAd ad) {
+                            adMobRewardedAd = ad;
+                            onLoaded.onRewardedAdLoaded();
+
+                            adMobRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    super.onAdDismissedFullScreenContent();
+                                    adMobRewardedAd = null;
+                                    onDismiss.onRewardedAdDismissed();
+                                }
+
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(@NonNull com.google.android.gms.ads.AdError adError) {
+                                    super.onAdFailedToShowFullScreenContent(adError);
+                                    adMobRewardedAd = null;
+                                }
+                            });
+
+                            adMobRewardedAd.show(activity, rewardItem -> {
+                                onComplete.onRewardedAdComplete();
+                                Log.d(TAG, "The user earned the reward.");
+                            });
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad loaded");
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            Log.d(TAG, loadAdError.toString());
+                            adMobRewardedAd = null;
+                            onError.onRewardedAdError();
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "failed to load rewarded ad: " + loadAdError.getMessage() + ", try to load backup ad: " + backupAds);
+                        }
+                    });
+                    break;
+
+                case GOOGLE_AD_MANAGER:
+                case FAN_BIDDING_AD_MANAGER:
+                    com.google.android.gms.ads.rewarded.RewardedAd.load(activity, adManagerRewardedId, Tools.getGoogleAdManagerRequest(), new RewardedAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull com.google.android.gms.ads.rewarded.RewardedAd ad) {
+                            adManagerRewardedAd = ad;
+                            onLoaded.onRewardedAdLoaded();
+
+                            adManagerRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    super.onAdDismissedFullScreenContent();
+                                    adManagerRewardedAd = null;
+                                    onDismiss.onRewardedAdDismissed();
+                                }
+
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(@NonNull com.google.android.gms.ads.AdError adError) {
+                                    super.onAdFailedToShowFullScreenContent(adError);
+                                    adManagerRewardedAd = null;
+                                }
+                            });
+
+                            adManagerRewardedAd.show(activity, rewardItem -> {
+                                onComplete.onRewardedAdComplete();
+                                Log.d(TAG, "The user earned the reward.");
+                            });
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad loaded");
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            Log.d(TAG, loadAdError.toString());
+                            adManagerRewardedAd = null;
+                            onError.onRewardedAdError();
+                            Log.d(TAG, "[" + backupAds + "] [backup] " + "failed to load rewarded ad: " + loadAdError.getMessage() + ", try to load backup ad: " + backupAds);
+                        }
+                    });
+                    break;
+
+                case HUAWEI:
+                    if (huaweiRewardedAd == null) {
+                        huaweiRewardedAd = new RewardAd(activity, huaweiRewardedId);
+                        AdParam.Builder adParamBuilder = new AdParam.Builder();
+                        BiddingParam biddingParam = new BiddingParam();
+                        adParamBuilder.addBiddingParamMap(huaweiRewardedId, biddingParam);
+                        adParamBuilder.setTMax(500);
+                        huaweiRewardedAd.loadAd(new AdParam.Builder().build(), new RewardAdLoadListener() {
+                            @Override
+                            public void onRewardedLoaded() {
+                                onLoaded.onRewardedAdLoaded();
+                                huaweiRewardedAd.show(activity, new RewardAdStatusListener() {
+                                    @Override
+                                    public void onRewardAdOpened() {
+                                        // Rewarded ad opened.
+                                    }
+
+                                    @Override
+                                    public void onRewardAdFailedToShow(int errorCode) {
+                                        // Failed to display the rewarded ad.
+                                        onError.onRewardedAdError();
+                                        huaweiRewardedAd = null;
+                                    }
+
+                                    @Override
+                                    public void onRewardAdClosed() {
+                                        // Rewarded ad closed.
+                                        huaweiRewardedAd = null;
+                                        onDismiss.onRewardedAdDismissed();
+                                    }
+
+                                    @Override
+                                    public void onRewarded(com.huawei.hms.ads.reward.Reward reward) {
+                                        onComplete.onRewardedAdComplete();
+                                        Log.d(TAG, "The user earned the reward.");
+                                        // Provide a reward when reward conditions are met.
+                                    }
+                                });
+                                Log.d(TAG, "[" + backupAds + "] [backup] " + "rewarded ad loaded and show");
+                            }
+
+                            @Override
+                            public void onRewardAdFailedToLoad(int errorCode) {
+                                huaweiRewardedAd = null;
+                                onError.onRewardedAdError();
+                                Log.d(TAG, "[" + backupAds + "] [backup] " + "failed to load rewarded ad: " + errorCode + ", try to load backup ad: " + backupAds);
+                            }
+                        });
+                    }
+                    break;
+
+                default:
+                    onError.onRewardedAdError();
+                    break;
+            }
+        }
     }
 
     public void destroyRewardedAd() {

@@ -2,8 +2,6 @@ package com.solodroidx.ads.banner;
 
 import static com.solodroidx.ads.util.Constant.ADMOB;
 import static com.solodroidx.ads.util.Constant.AD_STATUS_ON;
-import static com.solodroidx.ads.util.Constant.FACEBOOK;
-import static com.solodroidx.ads.util.Constant.FAN;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_ADMOB;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_AD_MANAGER;
 import static com.solodroidx.ads.util.Constant.GOOGLE_AD_MANAGER;
@@ -13,7 +11,6 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 

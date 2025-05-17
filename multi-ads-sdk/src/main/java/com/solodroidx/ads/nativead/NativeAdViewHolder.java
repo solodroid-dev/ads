@@ -11,18 +11,12 @@ import static com.solodroidx.ads.util.Constant.FAN_BIDDING_ADMOB;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_AD_MANAGER;
 import static com.solodroidx.ads.util.Constant.FAN_BIDDING_APPLOVIN_MAX;
 import static com.solodroidx.ads.util.Constant.GOOGLE_AD_MANAGER;
-import static com.solodroidx.ads.util.Constant.HUAWEI;
-import static com.solodroidx.ads.util.Constant.PANGLE;
 import static com.solodroidx.ads.util.Constant.STARTAPP;
-import static com.solodroidx.ads.util.Constant.WORTISE;
-import static com.solodroidx.ads.util.Constant.YANDEX;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +28,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,7 +41,6 @@ import com.applovin.mediation.nativeAds.MaxNativeAdViewBinder;
 import com.applovin.sdk.AppLovinAd;
 import com.applovin.sdk.AppLovinAdLoadListener;
 import com.applovin.sdk.AppLovinAdSize;
-import com.bumptech.glide.Glide;
 import com.facebook.ads.AdError;
 import com.facebook.ads.AdOptionsView;
 import com.facebook.ads.NativeAdLayout;

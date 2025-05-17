@@ -13,7 +13,6 @@ import android.util.Log;
 
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.AdapterStatus;
-import com.solodroidx.ads.util.Tools;
 
 import java.util.Map;
 

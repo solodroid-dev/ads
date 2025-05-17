@@ -41,8 +41,6 @@ import com.yandex.mobile.ads.common.AdRequestConfiguration;
 import com.yandex.mobile.ads.common.AdRequestError;
 import com.yandex.mobile.ads.common.ImpressionData;
 
-import java.util.Date;
-
 public class AppOpenAd {
 
     public static final String TAG = "AppOpenAd";
