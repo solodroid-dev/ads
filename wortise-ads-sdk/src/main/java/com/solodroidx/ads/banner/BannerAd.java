@@ -22,6 +22,7 @@ import com.google.android.gms.ads.admanager.AdManagerAdView;
 import com.solodroidx.ads.R;
 import com.solodroidx.ads.util.Tools;
 import com.wortise.ads.AdError;
+import com.wortise.ads.RevenueData;
 
 @SuppressWarnings("deprecation")
 public class BannerAd {
@@ -222,6 +223,11 @@ public class BannerAd {
                     wortiseBannerAd.loadAd();
                     wortiseBannerAd.setListener(new com.wortise.ads.banner.BannerAd.Listener() {
                         @Override
+                        public void onBannerRevenuePaid(@NonNull com.wortise.ads.banner.BannerAd bannerAd, @NonNull RevenueData revenueData) {
+
+                        }
+
+                        @Override
                         public void onBannerImpression(@NonNull com.wortise.ads.banner.BannerAd bannerAd) {
 
                         }
@@ -318,6 +324,11 @@ public class BannerAd {
                     wortiseBannerView.addView(wortiseBannerAd);
                     wortiseBannerAd.loadAd();
                     wortiseBannerAd.setListener(new com.wortise.ads.banner.BannerAd.Listener() {
+                        @Override
+                        public void onBannerRevenuePaid(@NonNull com.wortise.ads.banner.BannerAd bannerAd, @NonNull RevenueData revenueData) {
+
+                        }
+
                         @Override
                         public void onBannerImpression(@NonNull com.wortise.ads.banner.BannerAd bannerAd) {
 

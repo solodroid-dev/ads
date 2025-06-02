@@ -72,6 +72,7 @@ import com.unity3d.services.banners.BannerErrorInfo;
 import com.unity3d.services.banners.BannerView;
 import com.unity3d.services.banners.UnityBannerSize;
 import com.wortise.ads.AdError;
+import com.wortise.ads.RevenueData;
 import com.yandex.mobile.ads.banner.BannerAdEventListener;
 import com.yandex.mobile.ads.banner.BannerAdView;
 import com.yandex.mobile.ads.common.AdRequestError;
@@ -510,6 +511,11 @@ public class BannerAd {
                     wortiseBannerAd.loadAd();
                     wortiseBannerAd.setListener(new com.wortise.ads.banner.BannerAd.Listener() {
                         @Override
+                        public void onBannerRevenuePaid(@NonNull com.wortise.ads.banner.BannerAd bannerAd, @NonNull RevenueData revenueData) {
+
+                        }
+
+                        @Override
                         public void onBannerImpression(@NonNull com.wortise.ads.banner.BannerAd bannerAd) {
 
                         }
@@ -931,6 +937,11 @@ public class BannerAd {
                     wortiseBannerView.addView(wortiseBannerAd);
                     wortiseBannerAd.loadAd();
                     wortiseBannerAd.setListener(new com.wortise.ads.banner.BannerAd.Listener() {
+                        @Override
+                        public void onBannerRevenuePaid(@NonNull com.wortise.ads.banner.BannerAd bannerAd, @NonNull RevenueData revenueData) {
+
+                        }
+
                         @Override
                         public void onBannerImpression(@NonNull com.wortise.ads.banner.BannerAd bannerAd) {
 

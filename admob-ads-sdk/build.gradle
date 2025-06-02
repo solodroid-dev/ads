@@ -26,7 +26,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
 
     //Primary Ad Networks
-    implementation 'com.google.android.gms:play-services-ads:24.2.0'
+    implementation 'com.google.android.gms:play-services-ads:24.3.0'
 
     //GDPR
     implementation 'com.google.android.ump:user-messaging-platform:3.2.0'

@@ -78,6 +78,7 @@ import com.startapp.sdk.ads.nativead.NativeAdDetails;
 import com.startapp.sdk.ads.nativead.NativeAdPreferences;
 import com.startapp.sdk.ads.nativead.StartAppNativeAd;
 import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
+import com.wortise.ads.RevenueData;
 import com.wortise.ads.natives.GoogleNativeAd;
 import com.yandex.mobile.ads.common.AdRequestError;
 import com.yandex.mobile.ads.common.ImpressionData;
@@ -650,6 +651,11 @@ public class NativeAdView {
                     if (wortiseNativeAd.getVisibility() != View.VISIBLE) {
                         mGoogleNativeAd = new GoogleNativeAd(activity, wortiseNativeId, new GoogleNativeAd.Listener() {
                             @Override
+                            public void onNativeRevenuePaid(@NonNull GoogleNativeAd googleNativeAd, @NonNull RevenueData revenueData) {
+
+                            }
+
+                            @Override
                             public void onNativeFailedToLoad(@NonNull GoogleNativeAd googleNativeAd, @NonNull com.wortise.ads.AdError adError) {
                                 loadBackupNativeAd();
                                 Log.d(TAG, "Wortise Native Ad failed loaded");
@@ -1209,6 +1215,11 @@ public class NativeAdView {
                 case WORTISE:
                     if (wortiseNativeAd.getVisibility() != View.VISIBLE) {
                         mGoogleNativeAd = new GoogleNativeAd(activity, wortiseNativeId, new GoogleNativeAd.Listener() {
+                            @Override
+                            public void onNativeRevenuePaid(@NonNull GoogleNativeAd googleNativeAd, @NonNull RevenueData revenueData) {
+
+                            }
+
                             @Override
                             public void onNativeFailedToLoad(@NonNull GoogleNativeAd googleNativeAd, @NonNull com.wortise.ads.AdError adError) {
                                 Log.d(TAG, "[Backup] Wortise Native Ad failed loaded");

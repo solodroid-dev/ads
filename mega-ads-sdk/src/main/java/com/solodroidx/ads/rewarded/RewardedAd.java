@@ -74,6 +74,7 @@ import com.unity3d.ads.IUnityAdsLoadListener;
 import com.unity3d.ads.IUnityAdsShowListener;
 import com.unity3d.ads.UnityAds;
 import com.unity3d.ads.UnityAdsShowOptions;
+import com.wortise.ads.RevenueData;
 import com.wortise.ads.rewarded.models.Reward;
 import com.yandex.mobile.ads.common.AdRequestConfiguration;
 import com.yandex.mobile.ads.common.AdRequestError;
@@ -498,6 +499,11 @@ public class RewardedAd {
                     wortiseRewardedAd = new com.wortise.ads.rewarded.RewardedAd(activity, wortiseRewardedId);
                     wortiseRewardedAd.setListener(new com.wortise.ads.rewarded.RewardedAd.Listener() {
                         @Override
+                        public void onRewardedRevenuePaid(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull RevenueData revenueData) {
+
+                        }
+
+                        @Override
                         public void onRewardedImpression(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
 
                         }
@@ -902,6 +908,11 @@ public class RewardedAd {
                 case WORTISE:
                     wortiseRewardedAd = new com.wortise.ads.rewarded.RewardedAd(activity, wortiseRewardedId);
                     wortiseRewardedAd.setListener(new com.wortise.ads.rewarded.RewardedAd.Listener() {
+                        @Override
+                        public void onRewardedRevenuePaid(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull RevenueData revenueData) {
+
+                        }
+
                         @Override
                         public void onRewardedImpression(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
 
@@ -1841,6 +1852,11 @@ public class RewardedAd {
                     wortiseRewardedAd = new com.wortise.ads.rewarded.RewardedAd(activity, wortiseRewardedId);
                     wortiseRewardedAd.setListener(new com.wortise.ads.rewarded.RewardedAd.Listener() {
                         @Override
+                        public void onRewardedRevenuePaid(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull RevenueData revenueData) {
+
+                        }
+
+                        @Override
                         public void onRewardedLoaded(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
                             onLoaded.onRewardedAdLoaded();
                             wortiseRewardedAd = rewardedAd;
@@ -2414,6 +2430,11 @@ public class RewardedAd {
                 case WORTISE:
                     wortiseRewardedAd = new com.wortise.ads.rewarded.RewardedAd(activity, wortiseRewardedId);
                     wortiseRewardedAd.setListener(new com.wortise.ads.rewarded.RewardedAd.Listener() {
+                        @Override
+                        public void onRewardedRevenuePaid(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd, @NonNull RevenueData revenueData) {
+
+                        }
+
                         @Override
                         public void onRewardedLoaded(@NonNull com.wortise.ads.rewarded.RewardedAd rewardedAd) {
                             onLoaded.onRewardedAdLoaded();

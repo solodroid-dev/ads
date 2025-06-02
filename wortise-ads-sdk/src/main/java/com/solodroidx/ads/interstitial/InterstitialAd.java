@@ -21,6 +21,7 @@ import com.google.android.gms.ads.admanager.AdManagerInterstitialAdLoadCallback;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.solodroidx.ads.listener.OnInterstitialAdDismissedListener;
 import com.solodroidx.ads.util.Tools;
+import com.wortise.ads.RevenueData;
 
 @SuppressWarnings("deprecation")
 public class InterstitialAd {
@@ -256,6 +257,11 @@ public class InterstitialAd {
                     wortiseInterstitialAd = new com.wortise.ads.interstitial.InterstitialAd(activity, wortiseInterstitialId);
                     wortiseInterstitialAd.setListener(new com.wortise.ads.interstitial.InterstitialAd.Listener() {
                         @Override
+                        public void onInterstitialRevenuePaid(@NonNull com.wortise.ads.interstitial.InterstitialAd interstitialAd, @NonNull RevenueData revenueData) {
+
+                        }
+
+                        @Override
                         public void onInterstitialImpression(@NonNull com.wortise.ads.interstitial.InterstitialAd interstitialAd) {
 
                         }
@@ -393,6 +399,11 @@ public class InterstitialAd {
                 case WORTISE:
                     wortiseInterstitialAd = new com.wortise.ads.interstitial.InterstitialAd(activity, wortiseInterstitialId);
                     wortiseInterstitialAd.setListener(new com.wortise.ads.interstitial.InterstitialAd.Listener() {
+                        @Override
+                        public void onInterstitialRevenuePaid(@NonNull com.wortise.ads.interstitial.InterstitialAd interstitialAd, @NonNull RevenueData revenueData) {
+
+                        }
+
                         @Override
                         public void onInterstitialImpression(@NonNull com.wortise.ads.interstitial.InterstitialAd interstitialAd) {
 

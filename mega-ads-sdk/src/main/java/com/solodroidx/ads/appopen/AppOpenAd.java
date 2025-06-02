@@ -34,6 +34,7 @@ import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.admanager.AdManagerAdRequest;
 import com.solodroidx.ads.listener.OnShowAdCompleteListener;
+import com.wortise.ads.RevenueData;
 import com.yandex.mobile.ads.appopenad.AppOpenAdEventListener;
 import com.yandex.mobile.ads.appopenad.AppOpenAdLoadListener;
 import com.yandex.mobile.ads.appopenad.AppOpenAdLoader;
@@ -451,6 +452,11 @@ public class AppOpenAd {
                     wortiseAppOpenAd = new com.wortise.ads.appopen.AppOpenAd(activity, wortiseAppOpenId);
                     wortiseAppOpenAd.setListener(new com.wortise.ads.appopen.AppOpenAd.Listener() {
                         @Override
+                        public void onAppOpenRevenuePaid(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd, @NonNull RevenueData revenueData) {
+
+                        }
+
+                        @Override
                         public void onAppOpenImpression(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
 
                         }
@@ -661,6 +667,11 @@ public class AppOpenAd {
                 if (wortiseAppOpenAd != null) {
                     if (wortiseAppOpenAd.isAvailable()) {
                         wortiseAppOpenAd.setListener(new com.wortise.ads.appopen.AppOpenAd.Listener() {
+                            @Override
+                            public void onAppOpenRevenuePaid(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd, @NonNull RevenueData revenueData) {
+
+                            }
+
                             @Override
                             public void onAppOpenImpression(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
 
@@ -905,6 +916,11 @@ public class AppOpenAd {
                     wortiseAppOpenAd = new com.wortise.ads.appopen.AppOpenAd(activity, wortiseAppOpenId);
                     wortiseAppOpenAd.setListener(new com.wortise.ads.appopen.AppOpenAd.Listener() {
                         @Override
+                        public void onAppOpenRevenuePaid(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd, @NonNull RevenueData revenueData) {
+
+                        }
+
+                        @Override
                         public void onAppOpenImpression(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
 
                         }
@@ -1104,6 +1120,11 @@ public class AppOpenAd {
                 if (wortiseAppOpenAd != null) {
                     if (wortiseAppOpenAd.isAvailable()) {
                         wortiseAppOpenAd.setListener(new com.wortise.ads.appopen.AppOpenAd.Listener() {
+                            @Override
+                            public void onAppOpenRevenuePaid(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd, @NonNull RevenueData revenueData) {
+
+                            }
+
                             @Override
                             public void onAppOpenImpression(@NonNull com.wortise.ads.appopen.AppOpenAd appOpenAd) {
 

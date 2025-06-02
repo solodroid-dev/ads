@@ -34,6 +34,7 @@ import com.solodroidx.ads.util.Constant;
 import com.solodroidx.ads.util.NativeTemplateStyle;
 import com.solodroidx.ads.util.TemplateView;
 import com.solodroidx.ads.util.Tools;
+import com.wortise.ads.RevenueData;
 import com.wortise.ads.natives.GoogleNativeAd;
 
 @SuppressWarnings("deprecation")
@@ -295,6 +296,11 @@ public class NativeAd {
                     if (wortiseNativeAd.getVisibility() != View.VISIBLE) {
                         mGoogleNativeAd = new GoogleNativeAd(activity, wortiseNativeId, new GoogleNativeAd.Listener() {
                             @Override
+                            public void onNativeRevenuePaid(@NonNull GoogleNativeAd googleNativeAd, @NonNull RevenueData revenueData) {
+
+                            }
+
+                            @Override
                             public void onNativeFailedToLoad(@NonNull GoogleNativeAd googleNativeAd, @NonNull com.wortise.ads.AdError adError) {
                                 loadBackupNativeAd();
                                 Log.d(TAG, "Wortise Native Ad failed loaded");
@@ -442,6 +448,11 @@ public class NativeAd {
                 case WORTISE:
                     if (wortiseNativeAd.getVisibility() != View.VISIBLE) {
                         mGoogleNativeAd = new GoogleNativeAd(activity, wortiseNativeId, new GoogleNativeAd.Listener() {
+                            @Override
+                            public void onNativeRevenuePaid(@NonNull GoogleNativeAd googleNativeAd, @NonNull RevenueData revenueData) {
+
+                            }
+
                             @Override
                             public void onNativeFailedToLoad(@NonNull GoogleNativeAd googleNativeAd, @NonNull com.wortise.ads.AdError adError) {
                                 Log.d(TAG, "[Backup] Wortise Native Ad failed loaded");
