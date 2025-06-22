@@ -281,12 +281,16 @@ public class AppOpenAd {
                         if (!adMobAppOpenId.equals("0")) {
                             appOpenAdMob.showAdIfAvailable(activity, adMobAppOpenId, onShowAdCompleteListener);
                             AppOpenAd.isAppOpenAdLoaded = true;
+                        } else {
+                            onShowAdCompleteListener.onShowAdComplete();
                         }
                         break;
                     case GOOGLE_AD_MANAGER:
                         if (!adManagerAppOpenId.equals("0")) {
                             appOpenAdManager.showAdIfAvailable(activity, adManagerAppOpenId, onShowAdCompleteListener);
                             AppOpenAd.isAppOpenAdLoaded = true;
+                        } else {
+                            onShowAdCompleteListener.onShowAdComplete();
                         }
                         break;
                     case APPLOVIN:
@@ -294,24 +298,32 @@ public class AppOpenAd {
                         if (!applovinAppOpenId.equals("0")) {
                             appOpenAdAppLovin.showAdIfAvailable(activity, applovinAppOpenId, onShowAdCompleteListener);
                             AppOpenAd.isAppOpenAdLoaded = true;
+                        } else {
+                            onShowAdCompleteListener.onShowAdComplete();
                         }
                         break;
                     case WORTISE:
                         if (!wortiseAppOpenId.equals("0")) {
                             appOpenAdWortise.showAdIfAvailable(activity, wortiseAppOpenId, onShowAdCompleteListener);
                             AppOpenAd.isAppOpenAdLoaded = true;
+                        } else {
+                            onShowAdCompleteListener.onShowAdComplete();
                         }
                         break;
                     case PANGLE:
                         if (!pangleAppOpenId.equals("0")) {
                             appOpenAdPangle.showAdIfAvailable(activity, pangleAppOpenId, onShowAdCompleteListener);
                             AppOpenAd.isAppOpenAdLoaded = true;
+                        } else {
+                            onShowAdCompleteListener.onShowAdComplete();
                         }
                         break;
                     case YANDEX:
                         if (!yandexAppOpenId.equals("0")) {
                             appOpenAdYandex.showAdIfAvailable(activity, yandexAppOpenId, onShowAdCompleteListener);
                             AppOpenAd.isAppOpenAdLoaded = true;
+                        } else {
+                            onShowAdCompleteListener.onShowAdComplete();
                         }
                         break;
                     default:
