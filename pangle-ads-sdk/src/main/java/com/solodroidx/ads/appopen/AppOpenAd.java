@@ -335,7 +335,11 @@ public class AppOpenAd {
                         onShowAdCompleteListener.onShowAdComplete();
                         break;
                 }
+            } else {
+                onShowAdCompleteListener.onShowAdComplete();
             }
+        } else {
+            onShowAdCompleteListener.onShowAdComplete();
         }
     }
 
