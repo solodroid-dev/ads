@@ -235,6 +235,9 @@ public class MainActivity extends AppCompatActivity {
             case "multi-ads-sdk-no-is":
                 ads = new String[]{"admob", "google_ad_manager", "facebook", "applovin_max", "applovin_discovery", "startapp", "unity"};
                 break;
+            case "triple-ads-sdk":
+                ads = new String[]{"admob", "google_ad_manager", "facebook", "applovin_max", "applovin_discovery"};
+                break;
             case "mega-ads-sdk":
                 ads = new String[]{"admob", "google_ad_manager", "facebook", "applovin_max", "applovin_discovery", "startapp", "unity", "ironsource", "wortise", "pangle", "huawei", "yandex"};
                 break;

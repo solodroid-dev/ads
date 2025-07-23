@@ -29,28 +29,28 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
 
     //Primary Ad Networks
-    implementation 'com.google.android.gms:play-services-ads:24.3.0'
-    implementation 'com.startapp:inapp-sdk:5.2.0'
-    implementation 'com.applovin:applovin-sdk:13.3.0'
-    implementation 'com.unity3d.ads:unity-ads:4.14.2'
+    implementation 'com.google.android.gms:play-services-ads:24.4.0'
+    implementation 'com.startapp:inapp-sdk:5.2.3'
+    implementation 'com.applovin:applovin-sdk:13.3.1'
+    implementation 'com.unity3d.ads:unity-ads:4.15.1'
     implementation 'com.facebook.android:audience-network-sdk:6.20.0'
     implementation 'com.pangle.global:pag-sdk:7.1.0.8'
     implementation 'com.huawei.hms:ads-prime:3.4.78.301'
     implementation 'com.huawei.hms:ads-consent:3.4.78.301'
-    implementation 'com.yandex.android:mobileads:7.12.3'
+    implementation 'com.yandex.android:mobileads:7.14.1'
 
     //AdMob mediation
-    implementation 'com.google.ads.mediation:applovin:13.2.0.1'
-    implementation 'com.google.ads.mediation:unity:4.14.2.0'
+    implementation 'com.google.ads.mediation:applovin:13.3.1.1'
+    implementation 'com.google.ads.mediation:unity:4.15.1.0'
     implementation 'com.google.ads.mediation:facebook:6.20.0.0'
-    implementation 'com.google.ads.mediation:pangle:7.1.0.8.0'
+    implementation 'com.google.ads.mediation:pangle:7.3.0.4.0'
 
     //Applovin mediation
-    implementation 'com.applovin.mediation:google-ad-manager-adapter:23.6.0.3'
-    implementation 'com.applovin.mediation:google-adapter:23.6.0.3'
-    implementation 'com.applovin.mediation:unityads-adapter:4.14.2.0'
-    implementation 'com.applovin.mediation:facebook-adapter:6.18.0.2'
-    implementation 'com.applovin.mediation:yandex-adapter:7.12.3.0'
+    implementation 'com.applovin.mediation:google-ad-manager-adapter:24.4.0.0'
+    implementation 'com.applovin.mediation:google-adapter:24.4.0.0'
+    implementation 'com.applovin.mediation:unityads-adapter:4.15.1.0'
+    implementation 'com.applovin.mediation:facebook-adapter:6.20.0.0'
+    implementation 'com.applovin.mediation:yandex-adapter:7.14.1.0'
 
     //Unity ads mediation
     implementation 'com.unity3d.mediation:mediation-sdk:1.1.0'

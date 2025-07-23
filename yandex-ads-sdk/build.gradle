@@ -18,7 +18,7 @@ android {
         buildConfig = true
     }
     lintOptions {
-        disable 'MobileAdsSdkOutdatedVersion'
+        //disable 'MobileAdsSdkOutdatedVersion'
     }
 }
 
@@ -29,8 +29,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
 
     //Primary Ad Networks
-    implementation 'com.google.android.gms:play-services-ads:24.3.0'
-    implementation 'com.yandex.android:mobileads:7.12.3'
+    implementation 'com.google.android.gms:play-services-ads:24.4.0'
+    implementation 'com.yandex.android:mobileads:7.14.1'
 
     //GDPR
     implementation 'com.google.android.ump:user-messaging-platform:3.2.0'

@@ -26,7 +26,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
 
     //Primary Ad Networks
-    implementation 'com.google.android.gms:play-services-ads:24.3.0'
+    implementation 'com.google.android.gms:play-services-ads:24.4.0'
     implementation 'com.huawei.hms:ads-prime:3.4.78.301'
     implementation 'com.huawei.hms:ads-consent:3.4.78.301'
 

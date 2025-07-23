@@ -26,11 +26,11 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
 
     //Primary Ad Networks
-    implementation 'com.google.android.gms:play-services-ads:24.3.0'
-    implementation 'com.unity3d.ads:unity-ads:4.14.2'
+    implementation 'com.google.android.gms:play-services-ads:24.4.0'
+    implementation 'com.unity3d.ads:unity-ads:4.15.1'
 
     //AdMob mediation
-    implementation 'com.google.ads.mediation:unity:4.14.2.0'
+    implementation 'com.google.ads.mediation:unity:4.15.1.0'
 
     //Unity ads mediation
     implementation 'com.unity3d.mediation:mediation-sdk:1.1.0'
