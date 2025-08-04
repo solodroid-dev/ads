@@ -70,6 +70,7 @@ public class AdsManager {
                 .setWortiseAppId(Constant.WORTISE_APP_ID, "MkzVBvyZ2aU2ESAd2Qd29ydGlzZS1hZHMtc2Rrz")
                 .setPangleAppId(Constant.PANGLE_APP_ID)
                 .setAppodealAppKey(Constant.APPODEAL_APP_KEY)
+                .setApplicationId(BuildConfig.APPLICATION_ID)
                 .setDebug(BuildConfig.DEBUG)
                 .build();
     }
