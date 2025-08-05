@@ -67,7 +67,7 @@ dependencies {
     implementation 'com.unity3d.mediation:unityads-adapter:1.1.0'
     implementation 'com.unity3d.mediation:admob-adapter:1.1.0'
     implementation 'com.unity3d.mediation:applovin-adapter:1.1.0'
-    implementation 'com.unity3d.mediation:facebook-adapter:1.1.1'
+//    implementation 'com.unity3d.mediation:facebook-adapter:1.1.1'
 //    implementation 'com.unity3d.mediation:ironsource-adapter:1.1.0'
 
     //GDPR
