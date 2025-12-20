@@ -5,3 +5,23 @@ plugins {
 //    id 'com.android.application' version '8.9.2' apply false
 //    id 'com.android.library' version '8.9.2' apply false
 }
+
+subprojects {
+    apply plugin: 'maven-publish'
+
+    afterEvaluate {
+        publishing {
+            publications {
+                release(MavenPublication) {
+                    // Ini akan otomatis mengambil output dari masing-masing module (aar)
+                    from components.findByName('release')
+
+                    groupId = 'com.github.solodroid-dev'
+                    // artifactId akan mengikuti nama folder module (misal: admob-ads-sdk)
+                    artifactId = project.name
+                    version = '1.3.3'
+                }
+            }
+        }
+    }
+}
