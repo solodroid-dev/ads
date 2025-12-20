@@ -20,7 +20,7 @@ subprojects {
 
                         groupId = 'com.github.solodroid-dev'
                         artifactId = project.name // Ini akan jadi 'admob-ads-sdk', dll
-                        version = '1.3.3'
+                        version = '1.3.3-alpha01'
                     }
                 }
             }
