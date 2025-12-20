@@ -1,5 +1,7 @@
 package com.solodroid.ads.sdkdemo.activity;
 
+import static com.solodroidx.ads.util.Constant.SDK_TYPE;
+
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,6 +42,7 @@ public class ActivitySplash extends AppCompatActivity {
         adsManager = new AdsManager(this);
         //adsManager.initializeAd();
         requestConfig();
+        setMainAds();
     }
 
     private void requestConfig() {
@@ -103,6 +106,41 @@ public class ActivitySplash extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void setMainAds() {
+        switch (SDK_TYPE) {
+            case "facebook-ads-sdk":
+                Constant.AD_NETWORK = "facebook";
+                break;
+            case "applovin-ads-sdk":
+                Constant.AD_NETWORK = "applovin";
+                break;
+            case "startapp-ads-sdk":
+                Constant.AD_NETWORK = "startapp";
+                break;
+            case "unity-ads-sdk":
+                Constant.AD_NETWORK = "unity";
+                break;
+            case "ironsource-ads-sdk":
+                Constant.AD_NETWORK = "ironsource";
+                break;
+            case "wortise-ads-sdk":
+                Constant.AD_NETWORK = "wortise";
+                break;
+            case "pangle-ads-sdk":
+                Constant.AD_NETWORK = "pangle";
+                break;
+            case "huawei-ads-sdk":
+                Constant.AD_NETWORK = "huawei";
+                break;
+            case "yandex-ads-sdk":
+                Constant.AD_NETWORK = "yandex";
+                break;
+            default:
+                Constant.AD_NETWORK = "admob";
+                break;
+        }
     }
 
 }

@@ -26,19 +26,19 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
 
     //Primary Ad Networks
-    implementation 'com.google.android.gms:play-services-ads:24.5.0'
-    implementation 'com.facebook.android:audience-network-sdk:6.20.0'
+    implementation 'com.google.android.gms:play-services-ads:24.9.0'
+    implementation 'com.facebook.android:audience-network-sdk:6.21.0'
 
     //AdMob mediation
-    implementation 'com.google.ads.mediation:facebook:6.20.0.0'
+    implementation 'com.google.ads.mediation:facebook:6.21.0.0'
 
     //GDPR
-    implementation 'com.google.android.ump:user-messaging-platform:3.2.0'
+    implementation 'com.google.android.ump:user-messaging-platform:4.0.0'
 
     //Rest API
     implementation 'com.squareup.retrofit2:converter-gson:3.0.0'
     implementation 'com.squareup.retrofit2:retrofit:3.0.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:5.1.0'
-    implementation 'com.squareup.okhttp3:okhttp:5.1.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.3.2'
+    implementation 'com.squareup.okhttp3:okhttp:5.3.2'
 
 }
