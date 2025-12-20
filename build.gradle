@@ -25,3 +25,34 @@ subprojects {
         }
     }
 }
+
+subprojects { project ->
+    project.plugins.withType(com.android.build.gradle.LibraryPlugin) {
+        project.apply plugin: 'maven-publish'
+
+        // Menggunakan afterEvaluate agar semua modul selesai di-load
+        project.afterEvaluate {
+            if (project.plugins.hasPlugin('maven-publish')) {
+                project.publishing {
+                    publications {
+                        // Ganti 'release' dengan nama unik agar tidak bentrok
+                        maven(MavenPublication) {
+                            // Gunakan lazy-check untuk komponen release
+                            def component = project.components.findByName('release')
+                            if (component != null) {
+                                from component
+                            } else {
+                                // Jika tetap tidak ketemu, ambil dari bundle AAR langsung
+                                artifact project.layout.buildDirectory.file("outputs/aar/${project.name}-release.aar")
+                            }
+
+                            groupId = 'com.github.solodroid-dev'
+                            artifactId = project.name
+                            version = '1.3.3-alpha05'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
