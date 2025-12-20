@@ -6,21 +6,22 @@ plugins {
 //    id 'com.android.library' version '8.9.2' apply false
 }
 
+// Di Root build.gradle
 subprojects {
-    // Pastikan hanya modul library yang dikonfigurasi untuk publish
-    if (project.name != 'app') {
-        apply plugin: 'maven-publish'
+    // Menggunakan callback yang lebih aman untuk Gradle
+    project.plugins.withType(com.android.build.gradle.LibraryPlugin) {
+        project.apply plugin: 'maven-publish'
 
-        afterEvaluate {
-            publishing {
+        project.afterEvaluate {
+            project.publishing {
                 publications {
                     release(MavenPublication) {
-                        // Menyesuaikan otomatis dengan output AAR masing-masing modul
-                        from components.findByName('release')
+                        // Mengambil komponen release dari library
+                        from project.components.findByName('release')
 
                         groupId = 'com.github.solodroid-dev'
-                        artifactId = project.name // Ini akan jadi 'admob-ads-sdk', dll
-                        version = '1.3.3-alpha01'
+                        artifactId = project.name
+                        version = '1.3.3-beta02'
                     }
                 }
             }
