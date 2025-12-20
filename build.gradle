@@ -6,21 +6,16 @@ plugins {
 //    id 'com.android.library' version '8.9.2' apply false
 }
 
-// Di Root build.gradle
 subprojects {
     project.plugins.withType(com.android.build.gradle.LibraryPlugin) {
         project.apply plugin: 'maven-publish'
-
         project.afterEvaluate {
             project.publishing {
                 publications {
                     release(MavenPublication) {
                         from project.components.findByName('release')
-
-                        // JANGAN tulis groupId di sini, biarkan JitPack yang menentukan
-                        // agar tidak terjadi konflik path/folder ganda
                         artifactId = project.name
-                        version = '1.3.3-alpha02'
+                        version = '1.3.3-alpha03'
                     }
                 }
             }
