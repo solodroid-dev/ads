@@ -1,4 +1,4 @@
 jdk:
   - openjdk17
 install:
-  - ./gradlew assembleRelease publishToMavenLocal -x :app:assembleRelease
+  - ./gradlew publishToMavenLocal -x :app:publishToMavenLocal
