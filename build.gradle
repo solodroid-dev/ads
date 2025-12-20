@@ -52,7 +52,7 @@ subprojects { project ->
 
                             groupId = 'com.github.solodroid-dev'
                             artifactId = project.name
-                            version = '1.3.3-alpha7'
+                            version = '1.3.3-alpha8'
                         }
                     }
                 }
