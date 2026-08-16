@@ -91,8 +91,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/btn_show_rewarded_ad"
                     android:textAllCaps="false"
-                    android:visibility="gone"
-                    android:textColor="@color/gnt_white" />
+                    android:textColor="@color/gnt_white"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/btn_rewarded2"
@@ -129,6 +129,17 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <Button
+        android:id="@+id/btn_privacy_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/banner_ad_view"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:text="Privacy Settings"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/banner_ad_view"

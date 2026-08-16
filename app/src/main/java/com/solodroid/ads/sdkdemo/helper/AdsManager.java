@@ -63,6 +63,7 @@ public class AdsManager {
         adNetwork.setAdStatus(Constant.AD_STATUS)
                 .setAdNetwork(Constant.AD_NETWORK)
                 .setBackupAdNetwork(Constant.BACKUP_AD_NETWORK)
+                .setAdMobAppId(activity.getString(R.string.admob_app_id))
                 .setAppLovinSdkKey(Constant.APPLOVIN_SDK_KEY)
                 .setStartappAppId(Constant.STARTAPP_APP_ID)
                 .setUnityGameId(Constant.UNITY_GAME_ID)
@@ -77,6 +78,14 @@ public class AdsManager {
 
     public void updateGdprConsentStatus() {
         gdpr.updateGDPRConsentStatus(Constant.AD_NETWORK, false, false);
+    }
+
+    public boolean isPrivacyOptionsRequired() {
+        return gdpr.isPrivacyOptionsRequired();
+    }
+
+    public void showPrivacyOptionsForm() {
+        gdpr.showPrivacyOptionsForm();
     }
 
     public void loadAppOpenAds(boolean placement, boolean withListener, OnShowAdCompleteListener onShowAdCompleteListener) {

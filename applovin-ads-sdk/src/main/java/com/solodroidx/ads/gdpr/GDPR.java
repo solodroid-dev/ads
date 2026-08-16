@@ -98,6 +98,29 @@ public class GDPR {
         MobileAds.initialize(activity);
     }
 
+    /**
+     * Mengecek apakah opsi privasi diwajibkan untuk diubah oleh pengguna
+     */
+    public boolean isPrivacyOptionsRequired() {
+        if (consentInformation == null) {
+            consentInformation = UserMessagingPlatform.getConsentInformation(activity);
+        }
+        return consentInformation.getPrivacyOptionsRequirementStatus() == ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED;
+    }
+
+    /**
+     * Menampilkan menu pengaturan ulang privasi (biasanya dipanggil dari tombol di menu Settings aplikasi)
+     */
+    public void showPrivacyOptionsForm() {
+        UserMessagingPlatform.showPrivacyOptionsForm(activity, formError -> {
+            if (formError != null) {
+                Log.e(TAG, "Privacy Form Error: " + formError.getMessage());
+            } else {
+                Log.d(TAG, "Privacy Form Dismissed.");
+            }
+        });
+    }
+
     public void loadForm(Activity activity) {
         UserMessagingPlatform.loadConsentForm(activity, consentForm -> {
                     this.consentForm = consentForm;

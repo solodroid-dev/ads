@@ -23,6 +23,7 @@ dependencyResolutionManagement {
 }
 rootProject.name = "MasterAdsSdk"
 include ':app'
+include ':gma-next-gen-ads-sdk'
 include ':admob-ads-sdk'
 include ':facebook-ads-sdk'
 include ':applovin-ads-sdk'

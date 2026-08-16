@@ -4,10 +4,10 @@ plugins {
 
 android {
     namespace 'com.solodroidx.ads'
-    compileSdk 34
+    compileSdk 36
     defaultConfig {
-        minSdk 23
-        targetSdk 34
+        minSdk 24
+        targetSdk 36
         consumerProguardFiles "consumer-rules.pro"
     }
     compileOptions {
@@ -26,11 +26,11 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
 
     //Primary Ad Networks
-    implementation 'com.google.android.gms:play-services-ads:24.9.0'
-    implementation 'com.unity3d.ads:unity-ads:4.16.5'
+    implementation 'com.google.android.gms:play-services-ads:25.4.0'
+    implementation 'com.unity3d.ads:unity-ads:4.20.0'
 
     //AdMob mediation
-    implementation 'com.google.ads.mediation:unity:4.16.5.0'
+    implementation 'com.google.ads.mediation:unity:4.19.0.1'
 
     //Unity ads mediation
     implementation 'com.unity3d.mediation:mediation-sdk:1.1.0'
@@ -39,11 +39,5 @@ dependencies {
 
     //GDPR
     implementation 'com.google.android.ump:user-messaging-platform:4.0.0'
-
-    //Rest API
-    implementation 'com.squareup.retrofit2:converter-gson:3.0.0'
-    implementation 'com.squareup.retrofit2:retrofit:3.0.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:5.1.0'
-    implementation 'com.squareup.okhttp3:okhttp:5.1.0'
 
 }

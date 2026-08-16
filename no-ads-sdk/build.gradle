@@ -4,10 +4,10 @@ plugins {
 
 android {
     namespace 'com.solodroidx.ads'
-    compileSdk 34
+    compileSdk 36
     defaultConfig {
-        minSdk 23
-        targetSdk 34
+        minSdk 24
+        targetSdk 36
         consumerProguardFiles "consumer-rules.pro"
     }
     compileOptions {
@@ -23,10 +23,4 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
     implementation 'androidx.appcompat:appcompat:1.6.0'
     implementation 'com.google.android.material:material:1.9.0'
-
-    //Rest API
-    implementation 'com.squareup.retrofit2:converter-gson:3.0.0'
-    implementation 'com.squareup.retrofit2:retrofit:3.0.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:5.1.0'
-    implementation 'com.squareup.okhttp3:okhttp:5.1.0'
 }

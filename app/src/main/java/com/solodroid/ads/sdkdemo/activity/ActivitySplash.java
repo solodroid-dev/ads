@@ -38,11 +38,15 @@ public class ActivitySplash extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
         sharedPref = new SharedPref(this);
         adsManager = new AdsManager(this);
-        //adsManager.initializeAd();
-        requestConfig();
+
+        // PERBAIKAN: setMainAds() dipanggil duluan untuk setup default
         setMainAds();
+
+        // PERBAIKAN: Tidak menginisialisasi ads di sini karena kita butuh data dari JSON API terlebih dahulu
+        requestConfig();
     }
 
     private void requestConfig() {
@@ -62,17 +66,17 @@ public class ActivitySplash extends AppCompatActivity {
         } else {
             callbackConfigCall = RestAdapter.createApi().getDriveJsonFileId(url);
         }
+
         callbackConfigCall.enqueue(new Callback<CallbackConfig>() {
             public void onResponse(@NonNull Call<CallbackConfig> call, @NonNull Response<CallbackConfig> response) {
                 CallbackConfig resp = response.body();
                 if (resp != null) {
                     sharedPref.savePostList(resp.android);
-                    showAppOpenAdIfAvailable();
                     Log.d(TAG, "responses success");
                 } else {
-                    showAppOpenAdIfAvailable();
                     Log.d(TAG, "responses null");
                 }
+                showAppOpenAdIfAvailable();
             }
 
             public void onFailure(@NonNull Call<CallbackConfig> call, @NonNull Throwable th) {
@@ -83,9 +87,15 @@ public class ActivitySplash extends AppCompatActivity {
     }
 
     private void showAppOpenAdIfAvailable() {
+        // PERBAIKAN SANGAT KRUSIAL:
+        // Inisialisasi Ads SDK harus dipanggil di titik ini!
+        // Ini memastikan MobileAds.initialize() berjalan SETELAH config JSON (App ID, dll) didapat
+        // dan SEBELUM AppOpenAd mencoba untuk me-load iklan.
+        adsManager.initializeAd();
+
         if (Constant.FORCE_TO_SHOW_APP_OPEN_AD_ON_START) {
             if (Constant.OPEN_ADS_ON_START) {
-                adsManager.loadAppOpenAds(Constant.OPEN_ADS_ON_START, true, ()-> {
+                adsManager.loadAppOpenAds(Constant.OPEN_ADS_ON_START, true, () -> {
                     startMainActivity();
                     AppOpenAd.isAppOpenAdLoaded = false;
                 });
@@ -142,5 +152,4 @@ public class ActivitySplash extends AppCompatActivity {
                 break;
         }
     }
-
 }

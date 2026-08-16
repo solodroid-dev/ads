@@ -4,10 +4,10 @@ plugins {
 
 android {
     namespace 'com.solodroidx.ads'
-    compileSdk 34
+    compileSdk 36
     defaultConfig {
-        minSdk 23
-        targetSdk 34
+        minSdk 24
+        targetSdk 36
         consumerProguardFiles "consumer-rules.pro"
     }
     compileOptions {
@@ -29,29 +29,29 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
 
     //Primary Ad Networks
-    implementation 'com.google.android.gms:play-services-ads:24.9.0'
-    implementation 'com.startapp:inapp-sdk:5.2.5'
-    implementation 'com.applovin:applovin-sdk:13.5.1'
-    implementation 'com.unity3d.ads:unity-ads:4.16.5'
-    implementation 'com.facebook.android:audience-network-sdk:6.21.0'
+    implementation 'com.google.android.gms:play-services-ads:25.4.0'
+    implementation 'com.startapp:inapp-sdk:5.3.1'
+    implementation 'com.applovin:applovin-sdk:13.6.4'
+    implementation 'com.unity3d.ads:unity-ads:4.20.0'
+    implementation 'com.facebook.android:audience-network-sdk:6.22.0'
     implementation 'com.pangle.global:pag-sdk:7.8.0.9'
-    implementation 'com.huawei.hms:ads-prime:3.4.81.300'
-    implementation 'com.huawei.hms:ads-consent:3.4.81.300'
+    implementation 'com.huawei.hms:ads-prime:3.4.90.300'
+    implementation 'com.huawei.hms:ads-consent:3.4.90.300'
     implementation 'com.yandex.android:mobileads:7.18.1'
 
     //AdMob mediation
-    implementation 'com.google.ads.mediation:applovin:13.5.1.0'
-    implementation 'com.google.ads.mediation:unity:4.16.5.0'
-    implementation 'com.google.ads.mediation:facebook:6.21.0.0'
+    implementation 'com.google.ads.mediation:applovin:13.6.4.0'
+    implementation 'com.google.ads.mediation:unity:4.19.0.1'
+    implementation 'com.google.ads.mediation:facebook:6.22.0.0'
     implementation ('com.pangle.global:pag-sdk:7.8.0.9') {
         exclude module: 'tiktok-business-android-sdk-comp'
     }
 
     //Applovin mediation
-    implementation 'com.applovin.mediation:google-ad-manager-adapter:24.9.0.0'
-    implementation 'com.applovin.mediation:google-adapter:24.9.0.0'
-    implementation 'com.applovin.mediation:unityads-adapter:4.16.5.0'
-    implementation 'com.applovin.mediation:facebook-adapter:6.21.0.0'
+    implementation 'com.applovin.mediation:google-ad-manager-adapter:25.4.0.0'
+    implementation 'com.applovin.mediation:google-adapter:25.4.0.0'
+    implementation 'com.applovin.mediation:unityads-adapter:4.20.0.0'
+    implementation 'com.applovin.mediation:facebook-adapter:6.22.0.0'
     implementation 'com.applovin.mediation:yandex-adapter:7.18.1.0'
 
     //Unity ads mediation
@@ -67,11 +67,5 @@ dependencies {
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
-
-    //Rest API
-    implementation 'com.squareup.retrofit2:converter-gson:3.0.0'
-    implementation 'com.squareup.retrofit2:retrofit:3.0.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:5.1.0'
-    implementation 'com.squareup.okhttp3:okhttp:5.1.0'
 
 }

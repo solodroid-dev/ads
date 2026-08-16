@@ -101,6 +101,29 @@ public class GDPR {
         );
     }
 
+    /**
+     * Mengecek apakah opsi privasi diwajibkan untuk diubah oleh pengguna
+     */
+    public boolean isPrivacyOptionsRequired() {
+        if (consentInformation == null) {
+            consentInformation = UserMessagingPlatform.getConsentInformation(activity);
+        }
+        return consentInformation.getPrivacyOptionsRequirementStatus() == ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED;
+    }
+
+    /**
+     * Menampilkan menu pengaturan ulang privasi (biasanya dipanggil dari tombol di menu Settings aplikasi)
+     */
+    public void showPrivacyOptionsForm() {
+        UserMessagingPlatform.showPrivacyOptionsForm(activity, formError -> {
+            if (formError != null) {
+                Log.e(TAG, "Privacy Form Error: " + formError.getMessage());
+            } else {
+                Log.d(TAG, "Privacy Form Dismissed.");
+            }
+        });
+    }
+
     public static String md5(final String s) {
         try {
             MessageDigest digest = MessageDigest.getInstance("MD5");

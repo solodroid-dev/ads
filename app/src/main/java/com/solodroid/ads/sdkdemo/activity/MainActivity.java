@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnNative;
     Button btnSelectAds;
     Button btnNativeAdStyle;
+    Button btnPrivacySettings;
     LinearLayout nativeAdViewContainer;
     LinearLayout bannerAdView;
     AdsManager adsManager;
@@ -84,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
 
         btnNativeAdStyle = findViewById(R.id.btn_native_ad_style);
         btnNativeAdStyle.setOnClickListener(v -> changeNativeAdStyle());
+
+        btnPrivacySettings = findViewById(R.id.btn_privacy_settings);
     }
 
     private void initProgressDialog() {
@@ -144,6 +147,14 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), SecondActivity.class));
             adsManager.destroyBannerAd();
         });
+
+        if (adsManager.isPrivacyOptionsRequired()) {
+            btnPrivacySettings.setVisibility(View.VISIBLE);
+            btnPrivacySettings.setOnClickListener(v -> adsManager.showPrivacyOptionsForm());
+        } else {
+            btnPrivacySettings.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -193,6 +204,9 @@ public class MainActivity extends AppCompatActivity {
     private void showAdChooser() {
         String[] ads;
         switch (SDK_TYPE) {
+            case "gma-next-gen-sdk":
+                ads = new String[]{"admob", "google_ad_manager"};
+                break;
             case "admob-ads-sdk":
                 ads = new String[]{"admob", "google_ad_manager"};
                 break;

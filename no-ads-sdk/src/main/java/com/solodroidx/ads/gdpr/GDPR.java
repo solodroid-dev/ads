@@ -33,6 +33,14 @@ public class GDPR {
 
     }
 
+    public boolean isPrivacyOptionsRequired() {
+        return false;
+    }
+
+    public void showPrivacyOptionsForm() {
+
+    }
+
     public static String md5(final String s) {
         try {
             MessageDigest digest = MessageDigest.getInstance("MD5");
