@@ -21,6 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -32,10 +33,12 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+// MENGGUNAKAN SDK ADMOB LAMA (PLAY SERVICES)
 import com.google.android.gms.ads.nativead.MediaView;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAd.Image;
 import com.google.android.gms.ads.nativead.NativeAdView;
+
 import com.solodroidx.ads.R;
 
 /**
@@ -210,7 +213,11 @@ public class TemplateView extends FrameLayout {
 
         nativeAdView.setCallToActionView(callToActionView);
         nativeAdView.setHeadlineView(primaryView);
-        nativeAdView.setMediaView(mediaView);
+
+        if (mediaView != null) {
+            nativeAdView.setMediaView(mediaView);
+        }
+
         secondaryView.setVisibility(VISIBLE);
         if (adHasOnlyStore(nativeAd)) {
             nativeAdView.setStoreView(secondaryView);
@@ -225,7 +232,6 @@ public class TemplateView extends FrameLayout {
         primaryView.setText(headline);
         callToActionView.setText(cta);
 
-        //  Set the secondary view to be the star rating if available.
         if (starRating != null && starRating > 0) {
             secondaryView.setVisibility(GONE);
             ratingBar.setVisibility(VISIBLE);
@@ -258,7 +264,9 @@ public class TemplateView extends FrameLayout {
      * https://developers.google.com/admob/android/native-unified#destroy_ad
      */
     public void destroyNativeAd() {
-        nativeAd.destroy();
+        if (nativeAd != null) {
+            nativeAd.destroy();
+        }
     }
 
     private void initView(Context context, AttributeSet attributeSet) {
@@ -283,13 +291,14 @@ public class TemplateView extends FrameLayout {
         tertiaryView = findViewById(R.id.body);
 
         ratingBar = findViewById(R.id.rating_bar);
-        ratingBar.setEnabled(false);
+        if (ratingBar != null) {
+            ratingBar.setEnabled(false);
+        }
 
         callToActionView = findViewById(R.id.cta);
         iconView = findViewById(R.id.icon);
 
         mediaView = findViewById(R.id.media_view);
-        //mediaView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
 
         background = findViewById(R.id.background);
     }

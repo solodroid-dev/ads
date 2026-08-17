@@ -1,7 +1,14 @@
 // Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// ...
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 package com.solodroidx.ads.util;
 
@@ -12,6 +19,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -27,7 +35,6 @@ import androidx.annotation.RequiresApi;
 import com.google.android.libraries.ads.mobile.sdk.nativead.MediaView;
 import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAd;
 import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdView;
-// INFO: Import NativeAd.Image dihapus karena tidak lagi diperlukan di Next-Gen SDK
 
 import com.solodroidx.ads.R;
 
@@ -202,8 +209,6 @@ public class TemplateView extends FrameLayout {
         nativeAdView.setCallToActionView(callToActionView);
         nativeAdView.setHeadlineView(primaryView);
 
-        // INFO: nativeAdView.setMediaView(mediaView) DIHAPUS. (Akan diregister di baris terbawah)
-
         secondaryView.setVisibility(VISIBLE);
 
         if (adHasOnlyStore(nativeAd)) {
@@ -219,7 +224,6 @@ public class TemplateView extends FrameLayout {
         primaryView.setText(headline);
         callToActionView.setText(cta);
 
-        // Set the secondary view to be the star rating if available.
         if (starRating != null && starRating > 0) {
             secondaryView.setVisibility(GONE);
             ratingBar.setVisibility(VISIBLE);
@@ -231,7 +235,6 @@ public class TemplateView extends FrameLayout {
             ratingBar.setVisibility(GONE);
         }
 
-        // PERBAIKAN: Mengambil drawable tanpa harus mendeklarasikan variabel berjenis Image
         if (nativeAd.getIcon() != null) {
             iconView.setVisibility(VISIBLE);
             iconView.setImageDrawable(nativeAd.getIcon().getDrawable());
@@ -245,8 +248,15 @@ public class TemplateView extends FrameLayout {
             nativeAdView.setBodyView(tertiaryView);
         }
 
-        // PERBAIKAN: Fungsi baru dari Next-Gen SDK untuk meregistrasikan Iklan dan MediaView
-        nativeAdView.registerNativeAd(nativeAd, mediaView);
+        if (mediaView != null) {
+            nativeAdView.registerNativeAd(nativeAd, mediaView);
+        } else {
+            try {
+                nativeAdView.registerNativeAd(nativeAd, null);
+            } catch (Exception e) {
+                Log.e("TemplateView", "Error registering small native ad: " + e.getMessage());
+            }
+        }
     }
 
     public void destroyNativeAd() {

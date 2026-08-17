@@ -21,6 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -249,8 +250,15 @@ public class AdManagerTemplateView extends FrameLayout {
             nativeAdView.setBodyView(tertiaryView);
         }
 
-        // NEXT-GEN: Register media and ad in one go
-        nativeAdView.registerNativeAd(nativeAd, mediaView);
+        if (mediaView != null) {
+            nativeAdView.registerNativeAd(nativeAd, mediaView);
+        } else {
+            try {
+                nativeAdView.registerNativeAd(nativeAd, null);
+            } catch (Exception e) {
+                Log.e("TemplateView", "Error registering small native ad: " + e.getMessage());
+            }
+        }
     }
 
     /**

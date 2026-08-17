@@ -11,7 +11,6 @@ import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
-import androidx.multidex.MultiDex;
 
 import com.solodroid.ads.sdkdemo.data.Constant;
 import com.solodroidx.ads.appopen.AppOpenAd;
@@ -62,7 +61,6 @@ public class MyApplication extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        MultiDex.install(this);
     }
 
     LifecycleObserver lifecycleObserver = new DefaultLifecycleObserver() {

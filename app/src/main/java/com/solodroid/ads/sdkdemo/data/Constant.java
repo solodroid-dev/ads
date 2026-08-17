@@ -76,7 +76,7 @@ public class Constant {
 
     public static final String APPODEAL_APP_KEY = "7e96c95c3fae8d8dac0e7f2e8ca71686289cccc5857e556f";
 
-    public static String NATIVE_STYLE = "default";
+    public static String NATIVE_STYLE = "news";
     public static final String STYLE_NEWS = "news";
     public static final String STYLE_RADIO = "radio";
     public static final String STYLE_VIDEO_SMALL = "video_small";

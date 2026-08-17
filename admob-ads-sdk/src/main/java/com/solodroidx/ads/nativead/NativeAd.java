@@ -226,7 +226,8 @@ public class NativeAd {
                                         admobNativeAd.setStyles(styles);
                                         admobNativeBackground.setBackgroundResource(nativeBackgroundLight);
                                     }
-                                    mediaView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
+                                    if (mediaView != null)
+                                        mediaView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
                                     admobNativeAd.setNativeAd(NativeAd);
                                     admobNativeAd.setVisibility(View.VISIBLE);
                                     nativeAdViewContainer.setVisibility(View.VISIBLE);
@@ -260,7 +261,8 @@ public class NativeAd {
                                         adManagerNativeAd.setStyles(styles);
                                         adManagerNativeBackground.setBackgroundResource(nativeBackgroundLight);
                                     }
-                                    adManagerMediaView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
+                                    if (adManagerMediaView != null)
+                                        adManagerMediaView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
                                     adManagerNativeAd.setNativeAd(NativeAd);
                                     adManagerNativeAd.setVisibility(View.VISIBLE);
                                     nativeAdViewContainer.setVisibility(View.VISIBLE);
@@ -314,7 +316,8 @@ public class NativeAd {
                                         admobNativeAd.setStyles(styles);
                                         admobNativeBackground.setBackgroundResource(nativeBackgroundLight);
                                     }
-                                    mediaView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
+                                    if (mediaView != null)
+                                        mediaView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
                                     admobNativeAd.setNativeAd(NativeAd);
                                     admobNativeAd.setVisibility(View.VISIBLE);
                                     nativeAdViewContainer.setVisibility(View.VISIBLE);
@@ -349,7 +352,8 @@ public class NativeAd {
                                         adManagerNativeAd.setStyles(styles);
                                         adManagerNativeBackground.setBackgroundResource(nativeBackgroundLight);
                                     }
-                                    adManagerMediaView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
+                                    if (adManagerMediaView != null)
+                                        adManagerMediaView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
                                     adManagerNativeAd.setNativeAd(NativeAd);
                                     adManagerNativeAd.setVisibility(View.VISIBLE);
                                     nativeAdViewContainer.setVisibility(View.VISIBLE);
